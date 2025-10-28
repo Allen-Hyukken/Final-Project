@@ -2,14 +2,12 @@ package com.profilewebsite.finalproject.repository;
 
 import com.profilewebsite.finalproject.model.Question;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-    @Query("SELECT q FROM Question q WHERE q.quiz.id = :quizId ORDER BY q.qIndex DESC")
-    List<Question> findQuestionsByQuizOrderByQIndexAsc(@Param("quizId") Long quizId);
-
+    List<Question> findByQuizId(Long quizId);
 }
 

@@ -1,30 +1,37 @@
 package com.profilewebsite.finalproject.model;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 
+import javax.persistence.*;
+
+// Choice Entity
 @Entity
-@Getter @Setter
+@Table(name = "choice")
 public class Choice {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "question_id", nullable = false)
     private Question question;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String text;
 
-    private boolean correct = false;
+    @Column(nullable = false)
+    private Boolean correct = false;
 
-    public Choice() {}
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Choice(String text, Question question) {
-        this.text = text;
-        this.question = question;
-    }
+    public Question getQuestion() { return question; }
+    public void setQuestion(Question question) { this.question = question; }
 
+    public String getText() { return text; }
+    public void setText(String text) { this.text = text; }
 
+    public Boolean getCorrect() { return correct; }
+    public void setCorrect(Boolean correct) { this.correct = correct; }
 }

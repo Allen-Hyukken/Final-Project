@@ -1,6 +1,18 @@
-<div class="footer" th:fragment="footer">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+<!--**********************************
+    Footer start
+***********************************-->
+<div th:fragment="footer" class="footer">
     <div class="copyright">
-        <p>Copyright &copy; Designed & Developed by
-            <a href="https://themeforest.net/user/quixlab">Quixlab</a> 2018</p>
+        <p>Copyright &copy; <span th:text="${#dates.year(#dates.createNow())}">2024</span> Cerebro Metron. All Rights Reserved.</p>
     </div>
 </div>
+<!--**********************************
+    Footer end
+***********************************-->
+</body>
+</html>

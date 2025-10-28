@@ -1,91 +1,20 @@
-<div class="header" th:fragment="header" xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+</head>
+<body>
+<!--**********************************
+    Header start
+***********************************-->
+<div th:fragment="header" class="header">
     <div class="header-content clearfix">
-
         <div class="nav-control">
             <div class="hamburger">
                 <span class="toggle-icon"><i class="icon-menu"></i></span>
             </div>
         </div>
-
-
-
-        <!-- Right side -->
         <div class="header-right">
             <ul class="clearfix">
-
-
-                <!-- Notifications -->
-                <li class="icons dropdown">
-                    <a href="javascript:void(0)" data-toggle="dropdown">
-                        <i class="mdi mdi-bell-outline"></i>
-                        <span class="badge badge-pill gradient-2">3</span>
-                    </a>
-                    <div class="drop-down animated fadeIn dropdown-menu dropdown-notfication">
-                        <div class="dropdown-content-heading d-flex justify-content-between">
-                            <span class="">2 New Notifications</span>
-                            <a href="javascript:void()" class="d-inline-block">
-                                <span class="badge badge-pill gradient-2">5</span>
-                            </a>
-                        </div>
-                        <div class="dropdown-content-body">
-                            <ul>
-                                <li>
-                                    <a href="javascript:void()">
-                                        <span class="mr-3 avatar-icon bg-success-lighten-2"><i class="icon-present"></i></span>
-                                        <div class="notification-content">
-                                            <h6 class="notification-heading">Events near you</h6>
-                                            <span class="notification-text">Within next 5 days</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void()">
-                                        <span class="mr-3 avatar-icon bg-danger-lighten-2"><i class="icon-present"></i></span>
-                                        <div class="notification-content">
-                                            <h6 class="notification-heading">Event Started</h6>
-                                            <span class="notification-text">One hour ago</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void()">
-                                        <span class="mr-3 avatar-icon bg-success-lighten-2"><i class="icon-present"></i></span>
-                                        <div class="notification-content">
-                                            <h6 class="notification-heading">Event Ended Successfully</h6>
-                                            <span class="notification-text">One hour ago</span>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void()">
-                                        <span class="mr-3 avatar-icon bg-danger-lighten-2"><i class="icon-present"></i></span>
-                                        <div class="notification-content">
-                                            <h6 class="notification-heading">Events to Join</h6>
-                                            <span class="notification-text">After two days</span>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Language Dropdown -->
-                <li class="icons dropdown d-none d-md-flex">
-                    <a href="javascript:void(0)" class="log-user" data-toggle="dropdown">
-                        <span>English</span> <i class="fa fa-angle-down f-s-14" aria-hidden="true"></i>
-                    </a>
-                    <div class="drop-down dropdown-language animated fadeIn dropdown-menu">
-                        <div class="dropdown-content-body">
-                            <ul>
-                                <li><a href="javascript:void()">English</a></li>
-                                <li><a href="javascript:void()">Dutch</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- User Profile -->
                 <li class="icons dropdown">
                     <div class="user-img c-pointer position-relative" data-toggle="dropdown">
                         <span class="activity active"></span>
@@ -95,18 +24,32 @@
                         <div class="dropdown-content-body">
                             <ul>
                                 <li>
-                                    <a th:href="@{/profile}"><i class="icon-user"></i> <span>Profile</span></a>
+                                    <a href="javascript:void(0)">
+                                        <i class="icon-user"></i> <span sec:authentication="name">User</span>
+                                    </a>
                                 </li>
                                 <li>
-                                    <a th:href="@{/logout}"><i class="icon-key"></i> <span>Logout</span></a>
+                                    <a href="javascript:void(0)">
+                                        <i class="icon-key"></i> <span sec:authentication="principal.role">Role</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <form th:action="@{/logout}" method="post" style="display: inline;">
+                                        <button type="submit" style="background: none; border: none; cursor: pointer; padding: 0; width: 100%; text-align: left;">
+                                            <i class="icon-power"></i> <span>Logout</span>
+                                        </button>
+                                    </form>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 </li>
-
             </ul>
         </div>
     </div>
 </div>
-y
+<!--**********************************
+    Header end
+***********************************-->
+</body>
+</html>

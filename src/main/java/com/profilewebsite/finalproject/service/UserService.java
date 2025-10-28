@@ -1,55 +1,56 @@
 package com.profilewebsite.finalproject.service;
 
+
 import com.profilewebsite.finalproject.model.User;
-import com.profilewebsite.finalproject.repository.UserRepository;
+import  com.profilewebsite.finalproject.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
-import java.util.List; // ADDED
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 public class UserService {
-    private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository; //
-    }
+    @Autowired
+    private UserRepository userRepository;
 
-    public User save(User u) {
-        return userRepository.save(u); //
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+    public User registerUser(User user) {
+        // Check if email already exists
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("Email already registered");
+        }
+
+        // Encode password
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        return userRepository.save(user);
     }
 
     public Optional<User> findByEmail(String email) {
-        return userRepository.findByEmail(email); //
+        return userRepository.findByEmail(email);
     }
 
+    @Transactional(readOnly = true)
     public Optional<User> findById(Long id) {
-        return userRepository.findById(id); //
+        return userRepository.findById(id);
     }
 
-    /**
-     * ADDED: Required by TeacherController.viewClass
-     * This method finds all students enrolled in a specific class.
-     */
-    public List<User> findStudentsByClassRoom(Long classRoomId) {
-        // This assumes your UserRepository has a method to find users
-        // by the ID of a class they are enrolled in.
-        return userRepository.findByClasses_Id(classRoomId);
+    @Transactional(readOnly = true)
+    public User findByIdWithClasses(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        // Force initialization of lazy collections
+        user.getStudentClasses().size();
+        user.getTeacherClasses().size();
+        return user;
     }
 
-    // -----------------------------
-    // Get current logged-in user
-    // -----------------------------
-    public User getCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication(); //
-        String email = auth.getName(); //
-        return findByEmail(email).orElseThrow(() -> new RuntimeException("User not found")); //
-    }
-
-    public Long getCurrentUserId() {
-        return getCurrentUser().getId(); //
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 }

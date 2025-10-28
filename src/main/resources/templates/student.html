@@ -59,6 +59,9 @@
                         <h4 class="card-title">Join a Class</h4>
                         <div class="basic-form">
                             <form th:action="@{/student/join}" method="post">
+                                <!-- CSRF Token -->
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
                                 <div class="input-group">
                                     <input type="text" name="code" class="form-control input-rounded" placeholder="Enter the class code your teacher sent you" required>
                                     <div class="input-group-append">
