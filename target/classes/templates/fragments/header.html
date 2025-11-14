@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+</head>
+<body>
+<!--**********************************
+    Header start
+***********************************-->
+<div th:fragment="header" class="header">
+    <div class="header-content clearfix">
+        <div class="nav-control">
+            <div class="hamburger">
+                <span class="toggle-icon"><i class="icon-menu"></i></span>
+            </div>
+        </div>
+        <div class="header-right">
+            <ul class="clearfix">
+                <li class="icons dropdown">
+                    <div class="user-img c-pointer position-relative" data-toggle="dropdown">
+                        <span class="activity active"></span>
+                        <img th:src="@{/images/user/1.png}" height="40" width="40" alt="">
+                    </div>
+                    <div class="drop-down dropdown-profile animated fadeIn dropdown-menu">
+                        <div class="dropdown-content-body">
+                            <ul>
+                                <li>
+                                    <a href="javascript:void(0)">
+                                        <i class="icon-user"></i> <span sec:authentication="name">User</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)">
+                                        <i class="icon-key"></i> <span sec:authentication="principal.role">Role</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <form th:action="@{/logout}" method="post" style="display: inline;">
+                                        <button type="submit" style="background: none; border: none; cursor: pointer; padding: 0; width: 100%; text-align: left;">
+                                            <i class="icon-power"></i> <span>Logout</span>
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!--**********************************
+    Header end
+***********************************-->
+</body>
+</html>

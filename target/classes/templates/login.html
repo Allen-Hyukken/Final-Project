@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" class="h-100" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Cerebro Metron - Login</title>
+
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/images/favicon.png}">
+
+    <!-- Custom Stylesheet -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+
+<body class="h-100">
+
+<div class="login-form-bg h-100">
+    <div class="container h-100">
+        <div class="row justify-content-center h-100">
+            <div class="col-xl-6">
+                <div class="form-input-content">
+                    <div class="card login-form mb-0">
+                        <div class="card-body pt-5">
+
+                            <!-- App Name -->
+                            <a class="text-center" th:href="@{/}">
+                                <h3>LOGIN</h3>
+                            </a>
+
+                            <!-- 🔐 Login Form -->
+                            <!-- Spring Security intercepts POST /login automatically -->
+                            <form th:action="@{/login}" method="post" class="mt-5 mb-5 login-input">
+
+                                <!-- Email -->
+                                <div class="form-group">
+                                    <!-- Spring Security expects "username" field name -->
+                                    <input type="text" name="username" class="form-control" placeholder="Email" required>
+                                </div>
+
+                                <!-- Password -->
+                                <div class="form-group">
+                                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                                </div>
+
+
+
+                                <!-- Login Button -->
+                                <button type="submit" class="btn login-form__btn submit w-100">Sign In</button>
+
+                                <!-- Error Message -->
+                                <div th:if="${param.error}" class="text-danger text-center mt-3">
+                                    Invalid email or password.
+                                </div>
+
+                                <!-- Logout Message -->
+                                <div th:if="${param.logout}" class="text-success text-center mt-3">
+                                    You have been logged out successfully.
+                                </div>
+                            </form>
+
+                            <!-- Footer -->
+                            <p class="mt-5 login-form__footer">
+                                Don’t have an account?
+                                <a th:href="@{/register}" class="text-primary">Sign Up</a> now
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--**********************************
+    Scripts
+***********************************-->
+<script th:src="@{/plugins/common/common.min.js}"></script>
+<script th:src="@{/js/custom.min.js}"></script>
+<script th:src="@{/js/settings.js}"></script>
+<script th:src="@{/js/gleek.js}"></script>
+<script th:src="@{/js/styleSwitcher.js}"></script>
+
+</body>
+</html>

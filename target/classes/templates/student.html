@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-name" content="quixlab" />
+
+    <title>Student Dashboard - Quiz App</title>
+
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon.png}">
+    <link th:href="@{/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
+    <link th:href="@{/plugins/chartist/css/chartist.min.css}" rel="stylesheet">
+    <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<div id="main-wrapper">
+
+    <!-- Nav header -->
+    <div class="nav-header">
+        <div class="brand-logo">
+            <a th:href="@{/}">
+                <b class="logo-abbr"><img th:src="@{/images/logo.png}" alt=""></b>
+                <span class="logo-compact"><img th:src="@{/images/logo-compact.png}" alt=""></span>
+                <span class="brand-title">
+                    <img th:src="@{/images/logo-text.png}" alt="">
+                </span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <div th:replace="fragments/header :: header"></div>
+
+    <!--**********************************
+        Content body start
+    ***********************************-->
+    <div class="content-body">
+
+        <div class="row mx-0">
+            <div class="col p-md-0">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/student}">Home</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+
+            <!-- Join Class Section -->
+
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Join a Class</h4>
+                        <div class="basic-form">
+                            <form th:action="@{/student/join}" method="post">
+                                <!-- ✅ CSRF Token - THIS IS CRITICAL -->
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                                <div class="input-group">
+                                    <input type="text" name="code" class="form-control input-rounded"
+                                           placeholder="Enter the class code your teacher sent you" required>
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-rounded btn-success">Join</button>
+                                    </div>
+                                </div>
+
+                                <div th:if="${param.success}" class="text-success mt-2">Successfully joined the class!</div>
+                                <div th:if="${param.error == 'invalid'}" class="text-danger mt-2">Invalid class code.</div>
+                                <div th:if="${param.error == 'already_joined'}" class="text-danger mt-2">You have already joined this class.</div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Classes and Quizzes Section -->
+            <div class="row">
+                <div class="col">
+                    <h3 class="d-inline">My Classes</h3>
+                    <p class="text-muted">View classes and available quizzes</p>
+
+                    <div class="row" th:if="${classes}">
+                        <div class="col-md-6 mb-4" th:each="c : ${classes}">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <h5 th:text="${c.name}">Class Name</h5>
+                                    <p>Code: <span th:text="${c.code}"></span></p>
+                                    <p>Teacher: <span th:text="${c.teacher.name}">Teacher Name</span></p>
+
+                                    <!-- Quizzes under this class -->
+                                    <div th:if="${!#lists.isEmpty(c.quizzes)}">
+                                        <ul class="list-group mb-3">
+                                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                                th:each="q : ${c.quizzes}">
+                                                <span th:text="${q.title}">Quiz Title</span>
+                                                <a th:href="@{|/student/class/${c.id}/quiz/${q.id}|}"
+                                                   class="btn btn-sm btn-primary">Take Quiz</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div th:if="${#lists.isEmpty(c.quizzes)}" class="text-muted">
+                                        No quizzes yet for this class.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- If no classes joined -->
+                    <div th:if="${#lists.isEmpty(classes)}" class="text-center mt-4">
+                        <p class="text-muted">You haven’t joined any classes yet. Use the form above to join one.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!--**********************************
+        Content body end
+    ***********************************-->
+
+    <div th:replace="fragments/footer :: footer"></div>
+</div>
+
+<!--**********************************
+    Scripts
+***********************************-->
+<script th:src="@{/plugins/common/common.min.js}"></script>
+<script th:src="@{/js/custom.min.js}"></script>
+<script th:src="@{/js/settings.js}"></script>
+<script th:src="@{/js/gleek.js}"></script>
+<script th:src="@{/js/styleSwitcher.js}"></script>
+
+<script th:src="@{/plugins/chart.js/Chart.bundle.min.js}"></script>
+<script th:src="@{/plugins/circle-progress/circle-progress.min.js}"></script>
+<script th:src="@{/plugins/d3v3/index.js}"></script>
+<script th:src="@{/plugins/topojson/topojson.min.js}"></script>
+<script th:src="@{/plugins/datamaps/datamaps.world.min.js}"></script>
+<script th:src="@{/plugins/raphael/raphael.min.js}"></script>
+<script th:src="@{/plugins/morris/morris.min.js}"></script>
+<script th:src="@{/plugins/moment/moment.min.js}"></script>
+<script th:src="@{/plugins/pg-calendar/js/pignose.calendar.min.js}"></script>
+<script th:src="@{/plugins/chartist/js/chartist.min.js}"></script>
+<script th:src="@{/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js}"></script>
+<script th:src="@{/js/dashboard/dashboard-1.js}"></script>
+
+</body>
+</html>

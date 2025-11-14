@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <!-- theme meta -->
+    <meta name="theme-name" content="quixlab" />
+
+    <title>Quixlab - Bootstrap Admin Dashboard Template</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon.png}">
+
+    <!-- Pignose Calendar -->
+    <link th:href="@{/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
+
+    <!-- Chartist -->
+    <link th:href="@{/plugins/chartist/css/chartist.min.css}" rel="stylesheet">
+    <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
+
+    <!-- Custom Stylesheet -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<!--*******************
+    Preloader start
+********************-->
+<div id="preloader">
+    <div class="loader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+        </svg>
+    </div>
+</div>
+<!--*******************
+    Preloader end
+********************-->
+
+<!--**********************************
+    Main wrapper start
+***********************************-->
+<div id="main-wrapper">
+
+    <!--**********************************
+        Nav header start
+    ***********************************-->
+    <div class="nav-header">
+        <div class="brand-logo">
+            <a th:href="@{/}">
+                <b class="logo-abbr"><img th:src="@{/images/logo.png}" alt=""> </b>
+                <span class="logo-compact"><img th:src="@{/images/logo-compact.png}" alt=""></span>
+                <span class="brand-title">
+                        <img th:src="@{/images/logo-text.png}" alt="">
+                    </span>
+            </a>
+        </div>
+    </div>
+    <!--**********************************
+        Nav header end
+    ***********************************-->
+
+    <!--**********************************
+        Header start
+    ***********************************-->
+    <div th:replace="fragments/header :: header"></div>
+    <!--**********************************
+        Header end
+    ***********************************-->
+
+    <!--**********************************
+        Sidebar start
+    ***********************************-->
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <!--**********************************
+        Sidebar end
+    ***********************************-->
+
+    <!--**********************************
+        Content body start
+    ***********************************-->
+    <div class="content-body">
+
+        <div class="row page-titles mx-0">
+            <div class="col p-md-0">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                    <li class="breadcrumb-item active"><a href="javascript:void(0)">Home</a></li>
+                </ol>
+            </div>
+        </div>
+        <!-- row -->
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <p>To make your dashboard layout horizontal, please go to <code>gleek.js</code> file and make sure <code>layout: "horizontal"</code> </p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- #/ container -->
+    </div>
+    <!--**********************************
+        Content body end
+    ***********************************-->
+
+    <!--**********************************
+        Footer start
+    ***********************************-->
+    <div th:replace="fragments/footer :: footer"></div>
+    <!--**********************************
+        Footer end
+    ***********************************-->
+</div>
+<!--**********************************
+    Main wrapper end
+***********************************-->
+
+<!--**********************************
+    Scripts
+***********************************-->
+<script th:src="@{/plugins/common/common.min.js}"></script>
+<script th:src="@{/js/custom.min.js}"></script>
+<script th:src="@{/js/settings.js}"></script>
+<script th:src="@{/js/horizontal_gleek.js}"></script>
+<script th:src="@{/js/styleSwitcher.js}"></script>
+
+<!-- Chartjs -->
+<script th:src="@{/plugins/chart.js/Chart.bundle.min.js}"></script>
+<!-- Circle progress -->
+<script th:src="@{/plugins/circle-progress/circle-progress.min.js}"></script>
+<!-- Datamap -->
+<script th:src="@{/plugins/d3v3/index.js}"></script>
+<script th:src="@{/plugins/topojson/topojson.min.js}"></script>
+<script th:src="@{/plugins/datamaps/datamaps.world.min.js}"></script>
+<!-- Morrisjs -->
+<script th:src="@{/plugins/raphael/raphael.min.js}"></script>
+<script th:src="@{/plugins/morris/morris.min.js}"></script>
+<!-- Pignose Calendar -->
+<script th:src="@{/plugins/moment/moment.min.js}"></script>
+<script th:src="@{/plugins/pg-calendar/js/pignose.calendar.min.js}"></script>
+<!-- ChartistJS -->
+<script th:src="@{/plugins/chartist/js/chartist.min.js}"></script>
+<script th:src="@{/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js}"></script>
+
+<!-- Dashboard Script -->
+<script th:src="@{/js/dashboard/dashboard-1.js}"></script>
+
+</body>
+
+</html>

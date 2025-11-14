@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <!-- theme meta -->
+    <meta name="theme-name" content="quixlab" />
+
+    <title>Quixlab - Bootstrap Admin Dashboard Template</title>
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon.png}">
+
+    <!-- Pignose Calendar -->
+    <link th:href="@{/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
+
+    <!-- Chartist -->
+    <link th:href="@{/plugins/chartist/css/chartist.min.css}" rel="stylesheet">
+    <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
+
+    <!-- Custom Stylesheet -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<!--*******************
+    Preloader start
+********************-->
+<div id="preloader">
+    <div class="loader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10" />
+        </svg>
+    </div>
+</div>
+<!--*******************
+    Preloader end
+********************-->
+
+<!--**********************************
+    Main wrapper start
+***********************************-->
+<div id="main-wrapper">
+
+    <!--**********************************
+        Nav header start
+    ***********************************-->
+    <div class="nav-header">
+        <div class="brand-logo">
+            <a th:href="@{/}">
+                <b class="logo-abbr"><img th:src="@{/images/logo.png}" alt=""> </b>
+                <span class="logo-compact"><img th:src="@{/images/logo-compact.png}" alt=""></span>
+                <span class="brand-title">
+                        <img th:src="@{/images/logo-text.png}" alt="">
+                    </span>
+            </a>
+        </div>
+    </div>
+    <!--**********************************
+        Nav header end
+    ***********************************-->
+
+    <!--**********************************
+        Header start
+    ***********************************-->
+    <div th:replace="fragments/header :: header"></div>
+    <!--**********************************
+        Header end
+    ***********************************-->
+
+    <!--**********************************
+        Sidebar start
+    ***********************************-->
+
+    <!--**********************************
+        Sidebar end
+    ***********************************-->
+
+    <!--**********************************
+        Content body start
+    ***********************************-->
+    <div class="content-body">
+
+
+
+       <div class="container-fluid center">
+           <div class="col-lg-4 col-xl-3">
+               <div class="card">
+                   <div class="card-body">
+                       <div class="media align-items-center mb-4">
+                           <img class="mr-3" src="images/avatar/11.png" width="80" height="80" alt="">
+                           <div class="media-body">
+                               <h3 class="mb-0">Pikamy Cha</h3>
+                               <p class="text-muted mb-0">Canada</p>
+                           </div>
+                       </div>
+
+                       <div class="row mb-5">
+                           <div class="col">
+                               <div class="card card-profile text-center">
+                                   <span class="mb-1 text-primary"><i class="icon-people"></i></span>
+                                   <h3 class="mb-0">263</h3>
+                                   <p class="text-muted px-4">Following</p>
+                               </div>
+                           </div>
+                           <div class="col">
+                               <div class="card card-profile text-center">
+                                   <span class="mb-1 text-warning"><i class="icon-user-follow"></i></span>
+                                   <h3 class="mb-0">263</h3>
+                                   <p class="text-muted">Followers</p>
+                               </div>
+                           </div>
+                           <div class="col-12 text-center">
+                               <button class="btn btn-danger px-5">Follow Now</button>
+                           </div>
+                       </div>
+
+                       <h4>About Me</h4>
+                       <p class="text-muted">Hi, I'm Pikamy, has been the industry standard dummy text ever since the 1500s.</p>
+                       <ul class="card-profile__info">
+                           <li class="mb-1"><strong class="text-dark mr-4">Mobile</strong> <span>01793931609</span></li>
+                           <li><strong class="text-dark mr-4">Email</strong> <span>name@domain.com</span></li>
+                       </ul>
+                   </div>
+               </div>
+           </div>
+       </div>
+
+        <!-- #/ container -->
+    </div>
+    <!--**********************************
+        Content body end
+    ***********************************-->
+
+    <!--**********************************
+        Footer start
+    ***********************************-->
+    <div th:replace="fragments/footer :: footer"></div>
+    <!--**********************************
+        Footer end
+    ***********************************-->
+</div>
+<!--**********************************
+    Main wrapper end
+***********************************-->
+
+<!--**********************************
+    Scripts
+***********************************-->
+<script th:src="@{/plugins/common/common.min.js}"></script>
+<script th:src="@{/js/custom.min.js}"></script>
+<script th:src="@{/js/settings.js}"></script>
+<script th:src="@{/js/horizontal_gleek.js}"></script>
+<script th:src="@{/js/styleSwitcher.js}"></script>
+
+<!-- Chartjs -->
+<script th:src="@{/plugins/chart.js/Chart.bundle.min.js}"></script>
+<!-- Circle progress -->
+<script th:src="@{/plugins/circle-progress/circle-progress.min.js}"></script>
+<!-- Datamap -->
+<script th:src="@{/plugins/d3v3/index.js}"></script>
+<script th:src="@{/plugins/topojson/topojson.min.js}"></script>
+<script th:src="@{/plugins/datamaps/datamaps.world.min.js}"></script>
+<!-- Morrisjs -->
+<script th:src="@{/plugins/raphael/raphael.min.js}"></script>
+<script th:src="@{/plugins/morris/morris.min.js}"></script>
+<!-- Pignose Calendar -->
+<script th:src="@{/plugins/moment/moment.min.js}"></script>
+<script th:src="@{/plugins/pg-calendar/js/pignose.calendar.min.js}"></script>
+<!-- ChartistJS -->
+<script th:src="@{/plugins/chartist/js/chartist.min.js}"></script>
+<script th:src="@{/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js}"></script>
+
+<!-- Dashboard Script -->
+<script th:src="@{/js/dashboard/dashboard-1.js}"></script>
+
+</body>
+
+</html>
