@@ -45,7 +45,7 @@
             <div class="col p-md-0">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a th:href="@{/teacher}">Home</a></li>
-                    <li class="breadcrumb-item"><a th:href="@{|/teacher/class/${quiz.classRoom.id}|}">Class</a></li>
+                    <li class="breadcrumb-item" ><a th:href="@{|/teacher/class/${quiz.classRoom.id}|}">Class</a></li>
                     <li class="breadcrumb-item active">Edit Quiz</li>
                 </ol>
             </div>
@@ -83,7 +83,7 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <h5>Question <span th:text="${qi.index + 1}"></span></h5>
-                                    <a th:href="@{|/teacher/question/${q.id}/delete|}"
+                                    <a th:href="@{|/teacher/quiz/${quiz.id}/question/${q.id}/delete|}"
                                        class="btn btn-danger btn-sm"
                                        onclick="return confirm('Are you sure you want to delete this question?')">
                                         Delete
@@ -283,9 +283,19 @@
 <script th:src="@{/js/settings.js}"></script>
 <script th:src="@{/js/gleek.js}"></script>
 <script th:src="@{/js/styleSwitcher.js}"></script>
+
 <script th:src="@{/plugins/chart.js/Chart.bundle.min.js}"></script>
+<script th:src="@{/plugins/circle-progress/circle-progress.min.js}"></script>
+<script th:src="@{/plugins/d3v3/index.js}"></script>
+<script th:src="@{/plugins/topojson/topojson.min.js}"></script>
+<script th:src="@{/plugins/datamaps/datamaps.world.min.js}"></script>
+<script th:src="@{/plugins/raphael/raphael.min.js}"></script>
+<script th:src="@{/plugins/morris/morris.min.js}"></script>
 <script th:src="@{/plugins/moment/moment.min.js}"></script>
 <script th:src="@{/plugins/pg-calendar/js/pignose.calendar.min.js}"></script>
+<script th:src="@{/plugins/chartist/js/chartist.min.js}"></script>
+<script th:src="@{/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js}"></script>
+<script th:src="@{/js/dashboard/dashboard-1.js}"></script>
 
 </body>
 </html>

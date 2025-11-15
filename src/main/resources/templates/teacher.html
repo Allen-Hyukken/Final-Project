@@ -93,7 +93,8 @@
                     <div class="row" th:if="${!#lists.isEmpty(classes)}">
                         <!-- Loop through teacher’s classes -->
                         <div class="col-md-6 col-lg-3 mb-4" th:each="c : ${classes}">
-                            <div class="card shadow-sm">
+                            <a th:href="@{|/teacher/class/${c.id}|}">
+                                <div class="card shadow-sm">
                                 <!-- Fixed image rendering -->
                                 <img class="img-fluid" th:if="${c.bannerPath != null}" th:src="@{${c.bannerPath}}" alt="Class Banner" />
                                 <img class="img-fluid" th:unless="${c.bannerPath != null}" th:src="@{/images/default-class.jpg}" alt="Class Banner" />
@@ -107,12 +108,12 @@
 
                                 <div class="card-footer">
                                     <small class="text-muted">Created by: <span th:text="${c.teacher.name}"></span></small>
-                                    <a th:href="@{|/teacher/class/${c.id}|}"
-                                       class="card-link float-right text-primary">
-                                        <small>View Class</small>
-                                    </a>
+
+
+
                                 </div>
                             </div>
+                            </a>
                         </div>
                     </div>
 
@@ -135,7 +136,7 @@
 <script th:src="@{/plugins/common/common.min.js}"></script>
 <script th:src="@{/js/custom.min.js}"></script>
 <script th:src="@{/js/settings.js}"></script>
-<script th:src="@{/js/horizontal_gleek.js}"></script>
+<script th:src="@{/js/gleek.js}"></script>
 <script th:src="@{/js/styleSwitcher.js}"></script>
 
 <script th:src="@{/plugins/chart.js/Chart.bundle.min.js}"></script>

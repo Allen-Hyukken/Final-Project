@@ -165,9 +165,10 @@ public class TeacherController {
         return "redirect:/teacher";
     }
 
-    @GetMapping("/question/{id}/delete")
-    public String deleteQuestion(@PathVariable Long id, @RequestParam("quizId") Long quizId) {
-        quizService.deleteQuestion(id);
+    // FIXED: Changed from @RequestParam to @PathVariable for both questionId and quizId
+    @GetMapping("/quiz/{quizId}/question/{questionId}/delete")
+    public String deleteQuestion(@PathVariable Long quizId, @PathVariable Long questionId) {
+        quizService.deleteQuestion(questionId);
         return "redirect:/teacher/quiz/" + quizId + "/edit";
     }
 
