@@ -1,8 +1,5 @@
 package com.cerebro.finalproject.service;
 
-
-import com.cerebro.finalproject.model.*;
-import com.cerebro.finalproject.repository.*;
 import com.cerebro.finalproject.model.*;
 import com.cerebro.finalproject.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +66,7 @@ public class QuizService {
         return questionRepository.save(question);
     }
 
+    @Transactional
     public Question addQuestionWithChoices(Quiz quiz, String text, List<String> choiceTexts, String correctChoiceText) {
         Question question = new Question();
         question.setQuiz(quiz);
@@ -117,12 +115,17 @@ public class QuizService {
             switch (question.getType()) {
                 case MCQ:
                     if (givenAnswer != null) {
-                        Long choiceId = Long.parseLong(givenAnswer);
-                        Optional<Choice> choiceOpt = choiceRepository.findById(choiceId);
-                        if (choiceOpt.isPresent()) {
-                            Choice selectedChoice = choiceOpt.get();
-                            answer.setChoice(selectedChoice);
-                            isCorrect = selectedChoice.getCorrect();
+                        try {
+                            Long choiceId = Long.parseLong(givenAnswer);
+                            Optional<Choice> choiceOpt = choiceRepository.findById(choiceId);
+                            if (choiceOpt.isPresent()) {
+                                Choice selectedChoice = choiceOpt.get();
+                                answer.setChoice(selectedChoice);
+                                isCorrect = selectedChoice.getCorrect();
+                            }
+                        } catch (NumberFormatException e) {
+                            // Invalid answer format, mark as incorrect
+                            isCorrect = false;
                         }
                     }
                     break;

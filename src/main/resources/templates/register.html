@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" class="h-100" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Cerebro Metron - Register</title>
+
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/images/favicon.png}">
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+          integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+          crossorigin="anonymous">
+
+    <!-- Custom Stylesheet -->
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+</head>
+
+<body class="h-100">
+
+<div class="login-form-bg h-100">
+    <div class="container h-100">
+        <div class="row justify-content-center h-100">
+            <div class="col-xl-6">
+                <div class="form-input-content">
+                    <div class="card login-form mb-0">
+                        <div class="card-body pt-5">
+
+                            <!-- Title -->
+                            <a class="text-center" th:href="@{/}">
+                                <h3>REGISTER</h3>
+                            </a>
+
+                            <!-- 🧾 Registration Form -->
+                            <form th:action="@{/register}" th:object="${user}" method="post" class="mt-5 mb-5 login-input">
+
+                                <!-- Name -->
+                                <div class="form-group">
+                                    <input type="text" th:field="*{name}" class="form-control" placeholder="Full Name" required>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="form-group">
+                                    <input type="email" th:field="*{email}" class="form-control" placeholder="Email Address" required>
+                                </div>
+
+                                <!-- Password -->
+                                <div class="form-group">
+                                    <input type="password" th:field="*{password}" class="form-control" placeholder="Password" required>
+                                </div>
+
+                                <!-- Role Selection -->
+                                <!-- NEW - CORRECT -->
+                                <div class="form-group text-center">
+                                    <label class="radio-inline mr-3">
+                                        <input type="radio" name="role" value="TEACHER" required> Teacher
+                                    </label>
+                                    <label class="radio-inline mr-3">
+                                        <input type="radio" name="role" value="STUDENT" required> Student
+                                    </label>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button type="submit" class="btn login-form__btn submit w-100">Sign Up</button>
+
+                                <!-- Optional success/error feedback -->
+                                <div th:if="${param.success}" class="text-success text-center mt-3">
+                                    Registration successful! You may now log in.
+                                </div>
+                                <div th:if="${param.error}" class="text-danger text-center mt-3">
+                                    Registration failed. Please try again.
+                                </div>
+                            </form>
+
+                            <!-- Footer -->
+                            <p class="mt-5 login-form__footer">
+                                Already have an account?
+                                <a th:href="@{/login}" class="text-primary">Sign In</a> now
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--**********************************
+    Scripts
+***********************************-->
+<script th:src="@{/plugins/common/common.min.js}"></script>
+<script th:src="@{/js/custom.min.js}"></script>
+<script th:src="@{/js/settings.js}"></script>
+<script th:src="@{/js/gleek.js}"></script>
+<script th:src="@{/js/styleSwitcher.js}"></script>
+
+</body>
+</html>
