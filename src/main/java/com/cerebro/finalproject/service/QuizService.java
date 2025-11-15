@@ -36,6 +36,7 @@ public class QuizService {
         quiz.setClassRoom(classroom);
         quiz.setTeacher(teacher);
         quiz.setCreatedAt(LocalDateTime.now());
+        quiz.setTotalPoints(0.0); // Will be updated as questions are added
         return quizRepository.save(quiz);
     }
 
@@ -51,6 +52,7 @@ public class QuizService {
         return quizRepository.save(quiz);
     }
 
+    @Transactional
     public void deleteQuiz(Long id) {
         quizRepository.deleteById(id);
     }
@@ -63,7 +65,13 @@ public class QuizService {
         question.setText(text);
         question.setCorrectAnswer(correctAnswer);
         question.setQIndex(quiz.getQuestions().size());
-        return questionRepository.save(question);
+
+        Question savedQuestion = questionRepository.save(question);
+
+        // Update total points
+        updateQuizTotalPoints(quiz.getId());
+
+        return savedQuestion;
     }
 
     @Transactional
@@ -75,25 +83,63 @@ public class QuizService {
         question.setQIndex(quiz.getQuestions().size());
         question = questionRepository.save(question);
 
+        // Add choices
         for (String choiceText : choiceTexts) {
             if (choiceText != null && !choiceText.trim().isEmpty()) {
                 Choice choice = new Choice();
                 choice.setQuestion(question);
-                choice.setText(choiceText);
-                choice.setCorrect(choiceText.equalsIgnoreCase(correctChoiceText));
+                choice.setText(choiceText.trim());
+                choice.setCorrect(choiceText.trim().equalsIgnoreCase(correctChoiceText.trim()));
                 choiceRepository.save(choice);
             }
         }
 
+        // Update total points
+        updateQuizTotalPoints(quiz.getId());
+
         return question;
     }
 
+    @Transactional
     public void deleteQuestion(Long questionId) {
-        questionRepository.deleteById(questionId);
+        Optional<Question> questionOpt = questionRepository.findById(questionId);
+        if (questionOpt.isPresent()) {
+            Question question = questionOpt.get();
+            Long quizId = question.getQuiz().getId();
+
+            // Delete the question (choices will be deleted automatically due to cascade)
+            questionRepository.deleteById(questionId);
+
+            // Flush to ensure deletion is complete
+            questionRepository.flush();
+
+            // Update total points after deletion
+            updateQuizTotalPoints(quizId);
+        }
+    }
+
+    /**
+     * Updates the total points for a quiz based on number of questions
+     */
+    private void updateQuizTotalPoints(Long quizId) {
+        Optional<Quiz> quizOpt = quizRepository.findById(quizId);
+        if (quizOpt.isPresent()) {
+            Quiz quiz = quizOpt.get();
+            // Refresh the quiz to get the latest questions list
+            quizRepository.flush();
+
+            // Reload the quiz from database to get fresh question list
+            Quiz refreshedQuiz = quizRepository.findById(quizId).orElse(quiz);
+
+            // Each question is worth 1 point
+            refreshedQuiz.setTotalPoints((double) refreshedQuiz.getQuestions().size());
+            quizRepository.save(refreshedQuiz);
+        }
     }
 
     @Transactional
     public Attempt submitQuiz(Quiz quiz, User student, Map<String, String> answers) {
+        // Create attempt
         Attempt attempt = new Attempt();
         attempt.setQuiz(quiz);
         attempt.setStudent(student);
@@ -101,7 +147,9 @@ public class QuizService {
         attempt = attemptRepository.save(attempt);
 
         double totalScore = 0;
+        int totalQuestions = quiz.getQuestions().size();
 
+        // Process each question
         for (Question question : quiz.getQuestions()) {
             String answerKey = "q_" + question.getId();
             String givenAnswer = answers.get(answerKey);
@@ -112,9 +160,10 @@ public class QuizService {
 
             boolean isCorrect = false;
 
+            // Evaluate answer based on question type
             switch (question.getType()) {
                 case MCQ:
-                    if (givenAnswer != null) {
+                    if (givenAnswer != null && !givenAnswer.trim().isEmpty()) {
                         try {
                             Long choiceId = Long.parseLong(givenAnswer);
                             Optional<Choice> choiceOpt = choiceRepository.findById(choiceId);
@@ -132,14 +181,16 @@ public class QuizService {
 
                 case TF:
                     answer.setGivenText(givenAnswer);
-                    isCorrect = givenAnswer != null &&
-                            givenAnswer.equalsIgnoreCase(question.getCorrectAnswer());
+                    if (givenAnswer != null && question.getCorrectAnswer() != null) {
+                        isCorrect = givenAnswer.trim().equalsIgnoreCase(question.getCorrectAnswer().trim());
+                    }
                     break;
 
                 case IDENT:
                     answer.setGivenText(givenAnswer);
-                    isCorrect = givenAnswer != null &&
-                            givenAnswer.trim().equalsIgnoreCase(question.getCorrectAnswer().trim());
+                    if (givenAnswer != null && question.getCorrectAnswer() != null) {
+                        isCorrect = givenAnswer.trim().equalsIgnoreCase(question.getCorrectAnswer().trim());
+                    }
                     break;
 
                 case ESSAY:
@@ -151,11 +202,13 @@ public class QuizService {
             answer.setCorrect(isCorrect);
             answerRepository.save(answer);
 
+            // Add to score if correct
             if (isCorrect) {
-                totalScore += 1;
+                totalScore += 1.0;
             }
         }
 
+        // Save final score
         attempt.setScore(totalScore);
         return attemptRepository.save(attempt);
     }
@@ -170,20 +223,37 @@ public class QuizService {
             return 0.0;
         }
 
-        Quiz quiz = quizRepository.findById(quizId).orElse(null);
-        if (quiz == null) {
+        Optional<Quiz> quizOpt = quizRepository.findById(quizId);
+        if (quizOpt.isEmpty()) {
             return 0.0;
         }
 
-        double totalQuestions = quiz.getQuestions().size();
+        Quiz quiz = quizOpt.get();
+        double totalQuestions = quiz.getTotalPoints(); // Total points = number of questions
+
         if (totalQuestions == 0) {
             return 0.0;
         }
 
+        // Calculate average percentage
         double sum = attempts.stream()
                 .mapToDouble(a -> (a.getScore() / totalQuestions) * 100)
                 .sum();
 
         return sum / attempts.size();
+    }
+
+    /**
+     * Check if a student has already attempted a quiz
+     */
+    public boolean hasStudentAttempted(Long quizId, Long studentId) {
+        return attemptRepository.existsByQuizIdAndStudentId(quizId, studentId);
+    }
+
+    /**
+     * Get student's latest attempt for a quiz
+     */
+    public Optional<Attempt> getStudentLatestAttempt(Long quizId, Long studentId) {
+        return attemptRepository.findFirstByQuizIdAndStudentIdOrderBySubmittedAtDesc(quizId, studentId);
     }
 }

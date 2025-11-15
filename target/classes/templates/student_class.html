@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-name" content="quixlab"/>
 
-    <title>Student Class - Quiz List</title>
+    <title th:text="'Quizzes - ' + ${classRoom.name}">Student Class - Quiz List</title>
 
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon.png}">
     <link th:href="@{/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
@@ -26,7 +26,7 @@
     <!-- Nav Header -->
     <div class="nav-header">
         <div class="brand-logo">
-            <a th:href="@{/}">
+            <a th:href="@{/student}">
                 <b class="logo-abbr"><img th:src="@{/images/logo.png}" alt=""></b>
                 <span class="logo-compact"><img th:src="@{/images/logo-compact.png}" alt=""></span>
                 <span class="brand-title"><img th:src="@{/images/logo-text.png}" alt=""></span>
@@ -47,35 +47,120 @@
             <div class="col p-md-0">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a th:href="@{/student}">Home</a></li>
-                    <li class="breadcrumb-item"><a th:href="@{/student/student_class}">Classes</a></li>
-                    <li class="breadcrumb-item active">Quizzes</li>
+                    <li class="breadcrumb-item active" th:text="${classRoom.name}">Class</li>
                 </ol>
             </div>
         </div>
 
         <!-- Page Content -->
         <div class="container-fluid">
+
+            <!-- Class Info Card -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h3 th:text="${classRoom.name}">Class Name</h3>
+                            <p class="text-muted mb-1">
+                                <strong>Teacher:</strong> <span th:text="${classRoom.teacher.name}">Teacher Name</span>
+                            </p>
+                            <p class="text-muted mb-1">
+                                <strong>Class Code:</strong> <span th:text="${classRoom.code}">ABC123</span>
+                            </p>
+                        </div>
+                        <div class="col-md-4 text-right">
+                            <a th:href="@{/student}" class="btn btn-secondary">
+                                <i class="fa fa-arrow-left"></i> Back to Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success/Error/Info Messages -->
+            <div th:if="${param.submitted}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Success!</strong> Your quiz has been submitted successfully.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error!</strong> There was a problem. Please try again.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <!-- Quizzes Section -->
             <div class="row">
                 <div class="col-12 mb-4">
-                    <h4 class="d-inline" th:text="${classRoom != null ? classRoom.name : 'Class Name'}"></h4>
-                    <h5 class="text-muted">Available Quizzes</h5>
+                    <h4 class="d-inline">Available Quizzes</h4>
+                    <p class="text-muted">Click on a quiz to start taking it</p>
 
-                    <div class="row mt-4" th:if="${!#lists.isEmpty(quizzes)}">
-                        <div class="col-md-6 mb-4" th:each="q : ${quizzes}">
-                            <div class="card shadow-sm">
-                                <div class="card-body">
+                    <!-- Quiz Cards -->
+                    <div class="row mt-4" th:if="${quizzes != null and !#lists.isEmpty(quizzes)}">
+                        <div class="col-md-6 col-lg-4 mb-4" th:each="q : ${quizzes}">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-body d-flex flex-column">
                                     <h5 class="card-title" th:text="${q.title}">Quiz Title</h5>
-                                    <p class="text-muted" th:text="'Questions: ' + ${#lists.size(q.questions)}"></p>
-                                    <a th:href="@{|/student/student_class/${q.classRoom != null ? q.classRoom.id : 0}/quiz/${q.id}|}"
-                                       class="btn btn-primary btn-rounded">Take Quiz</a>
+
+                                    <p class="text-muted mb-2" th:if="${q.description != null and !#strings.isEmpty(q.description)}"
+                                       th:text="${q.description}">Quiz Description</p>
+
+                                    <div class="mb-3">
+                                        <small class="text-muted">
+                                            <i class="fa fa-question-circle"></i>
+                                            <strong>Questions:</strong> <span th:text="${#lists.size(q.questions)}">0</span>
+                                        </small>
+                                        <br>
+                                        <small class="text-muted">
+                                            <i class="fa fa-calendar"></i>
+                                            <strong>Created:</strong>
+                                            <span th:text="${#temporals.format(q.createdAt, 'MMM dd, yyyy')}">Date</span>
+                                        </small>
+                                    </div>
+
+                                    <!-- Check if student has already attempted this quiz -->
+                                    <!-- Show status badge if already attempted -->
+                                    <div th:if="${@quizService.hasStudentAttempted(q.id, studentId)}" class="mb-3">
+                                        <span class="badge badge-success">
+                                            <i class="fa fa-check-circle"></i> Completed
+                                        </span>
+                                        <br>
+                                        <small class="text-muted mt-1 d-block"
+                                               th:with="attempt=${@quizService.getStudentLatestAttempt(q.id, studentId).orElse(null)}">
+                                            <span th:if="${attempt != null}">
+                                                Score: <strong th:text="${attempt.score} + ' / ' + ${q.totalPoints}">0/0</strong>
+                                                (<span th:text="${#numbers.formatDecimal((attempt.score / q.totalPoints) * 100, 1, 2)}">0</span>%)
+                                            </span>
+                                        </small>
+                                    </div>
+
+                                    <div class="mt-auto">
+                                        <!-- Disable button if already attempted -->
+                                        <a th:if="${!@quizService.hasStudentAttempted(q.id, studentId)}"
+                                           th:href="@{|/student/class/${classRoom.id}/quiz/${q.id}|}"
+                                           class="btn btn-primary btn-block">
+                                            <i class="fa fa-pencil"></i> Take Quiz
+                                        </a>
+                                        <button th:if="${@quizService.hasStudentAttempted(q.id, studentId)}"
+                                                class="btn btn-secondary btn-block" disabled>
+                                            <i class="fa fa-check"></i> Already Completed
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- If no quizzes -->
-                    <div th:if="${#lists.isEmpty(quizzes)}" class="text-center mt-4">
-                        <p class="text-muted">No quizzes available for this class yet.</p>
+                    <div th:if="${quizzes == null or #lists.isEmpty(quizzes)}" class="text-center mt-5">
+                        <div class="empty-state py-5">
+                            <i class="fa fa-inbox" style="font-size: 64px; color: #ccc;"></i>
+                            <p class="text-muted mt-3">No quizzes available for this class yet.</p>
+                            <p class="text-muted">Check back later when your teacher creates some quizzes.</p>
+                        </div>
                     </div>
 
                 </div>

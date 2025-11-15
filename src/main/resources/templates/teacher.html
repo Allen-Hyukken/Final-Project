@@ -9,25 +9,19 @@
 
     <title>Teacher Dashboard - My Classes</title>
 
-    <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon.png}">
 
-    <!-- Pignose Calendar -->
     <link th:href="@{/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
 
-    <!-- Chartist -->
     <link th:href="@{/plugins/chartist/css/chartist.min.css}" rel="stylesheet">
     <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
 
-    <!-- Custom Stylesheet -->
     <link th:href="@{/css/style.css}" rel="stylesheet">
 </head>
-
 <body>
 
 <div id="main-wrapper">
 
-    <!-- Nav header start -->
     <div class="nav-header">
         <div class="brand-logo">
             <a th:href="@{/teacher}">
@@ -37,15 +31,10 @@
             </a>
         </div>
     </div>
-    <!-- Nav header end -->
-
-    <!-- Header -->
     <div th:replace="fragments/header :: header"></div>
 
-    <!-- Content body start -->
     <div class="content-body">
 
-        <!-- Breadcrumb -->
         <div class="row mx-0">
             <div class="col p-md-0">
                 <ol class="breadcrumb">
@@ -55,7 +44,6 @@
             </div>
         </div>
 
-        <!-- Create Class Form -->
         <div class="container-fluid">
             <div class="col-lg-5 mb-4">
                 <div class="card">
@@ -84,40 +72,42 @@
                 </div>
             </div>
 
-            <!-- My Classes -->
             <div class="row">
                 <div class="col">
                     <h3 class="d-inline">My Classes</h3>
                     <p class="text-muted">Click a class to manage quizzes and view students.</p>
 
                     <div class="row" th:if="${!#lists.isEmpty(classes)}">
-                        <!-- Loop through teacher’s classes -->
                         <div class="col-md-6 col-lg-3 mb-4" th:each="c : ${classes}">
                             <a th:href="@{|/teacher/class/${c.id}|}">
                                 <div class="card shadow-sm">
-                                <!-- Fixed image rendering -->
-                                <img class="img-fluid" th:if="${c.bannerPath != null}" th:src="@{${c.bannerPath}}" alt="Class Banner" />
-                                <img class="img-fluid" th:unless="${c.bannerPath != null}" th:src="@{/images/default-class.jpg}" alt="Class Banner" />
+                                    <img class="img-fluid" th:if="${c.bannerPath != null}" th:src="@{${c.bannerPath}}" alt="Class Banner" />
+                                    <img class="img-fluid" th:unless="${c.bannerPath != null}" th:src="@{/images/default-class.jpg}" alt="Class Banner" />
 
-                                <div class="card-body">
-                                    <h5 class="card-title" th:text="${c.name}">Class Name</h5>
-                                    <p class="card-text">
-                                        Code: <span th:text="${c.code}">ABC123</span>
-                                    </p>
+                                    <div class="card-body">
+                                        <h5 class="card-title" th:text="${c.name}">Class Name</h5>
+
+                                        <p class="card-text mb-0">
+                                            Code:
+                                            <span th:id="'classCode_' + ${c.id}"
+                                                  th:text="${c.code}"
+                                                  th:onclick="|event.stopPropagation(); copyClassCode('classCode_' + ${c.id}, 'copyFeedback_' + ${c.id})|"
+                                                  class="text-primary font-weight-bold"
+                                                  style="cursor: pointer;"
+                                                  title="Click to copy code">
+                                        </span>
+                                            <small th:id="'copyFeedback_' + ${c.id}" class="text-success ml-2" style="display: none;">Copied!</small>
+                                        </p>
+                                    </div>
+
+                                    <div class="card-footer">
+                                        <small class="text-muted">Created by: <span th:text="${c.teacher.name}"></span></small>
+                                    </div>
                                 </div>
-
-                                <div class="card-footer">
-                                    <small class="text-muted">Created by: <span th:text="${c.teacher.name}"></span></small>
-
-
-
-                                </div>
-                            </div>
                             </a>
                         </div>
                     </div>
 
-                    <!-- Empty state -->
                     <div th:if="${#lists.isEmpty(classes)}" class="text-center mt-4">
                         <p class="text-muted">You haven’t created any classes yet. Use the form above to create one.</p>
                     </div>
@@ -126,13 +116,8 @@
             </div>
         </div>
     </div>
-    <!-- Content body end -->
-
     <div th:replace="fragments/footer :: footer"></div>
 </div>
-<!-- Main wrapper end -->
-
-<!-- Scripts -->
 <script th:src="@{/plugins/common/common.min.js}"></script>
 <script th:src="@{/js/custom.min.js}"></script>
 <script th:src="@{/js/settings.js}"></script>
@@ -151,6 +136,74 @@
 <script th:src="@{/plugins/chartist/js/chartist.min.js}"></script>
 <script th:src="@{/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js}"></script>
 <script th:src="@{/js/dashboard/dashboard-1.js}"></script>
+
+<script>
+    /**
+     * Copies the text content of an element and shows a brief feedback message.
+     */
+    function copyClassCode(codeElementId, feedbackElementId) {
+        const codeElement = document.getElementById(codeElementId);
+        const feedbackElement = document.getElementById(feedbackElementId);
+
+        if (!codeElement) {
+            console.error('Code element not found:', codeElementId);
+            return;
+        }
+
+        const codeToCopy = codeElement.textContent.trim();
+
+        // 1. Use the modern Clipboard API (Recommended)
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(codeToCopy).then(() => {
+                showFeedback(feedbackElement);
+            }).catch(err => {
+                console.error('Failed to copy text using Clipboard API:', err);
+                fallbackCopy(codeElement, codeToCopy, feedbackElement);
+            });
+        } else {
+            // 2. Fallback method for older browsers
+            fallbackCopy(codeElement, codeToCopy, feedbackElement);
+        }
+    }
+
+    /**
+     * Fallback copy method using document.execCommand('copy').
+     */
+    function fallbackCopy(codeElement, codeToCopy, feedbackElement) {
+        try {
+            const range = document.createRange();
+            range.selectNodeContents(codeElement);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand('copy');
+            selection.removeAllRanges();
+
+            if (feedbackElement) {
+                feedbackElement.textContent = 'Copied (Fallback)!';
+                showFeedback(feedbackElement);
+                setTimeout(() => {
+                    feedbackElement.textContent = 'Copied!'; // Reset text
+                }, 2000);
+            }
+        } catch (fallbackErr) {
+            console.error('Fallback copy failed: ', fallbackErr);
+            alert(`Failed to copy code. Please manually copy: ${codeToCopy}`);
+        }
+    }
+
+    /**
+     * Shows the 'Copied!' feedback message temporarily.
+     */
+    function showFeedback(feedbackElement) {
+        if (feedbackElement) {
+            feedbackElement.style.display = 'inline';
+            setTimeout(() => {
+                feedbackElement.style.display = 'none';
+            }, 2000);
+        }
+    }
+</script>
 
 </body>
 </html>

@@ -14,6 +14,13 @@
     <link th:href="@{/plugins/chartist/css/chartist.min.css}" rel="stylesheet">
     <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <style>
+        .score-excellent { color: #28a745; font-weight: bold; }
+        .score-good { color: #17a2b8; font-weight: bold; }
+        .score-average { color: #ffc107; font-weight: bold; }
+        .score-poor { color: #dc3545; font-weight: bold; }
+    </style>
 </head>
 
 <body>
@@ -45,7 +52,7 @@
             <div class="col p-md-0">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a th:href="@{/teacher}">Home</a></li>
-                    <li class="breadcrumb-item"><a th:href="@{/teacher/teacher_classlist}">Class</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{|/teacher/class/${quiz.classRoom.id}|}">Class</a></li>
                     <li class="breadcrumb-item active" th:text="${quiz.title}">Quiz</li>
                 </ol>
             </div>
@@ -57,13 +64,53 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h3 th:text="${quiz.title}">Quiz Title</h3>
-                    <p class="text-muted" th:text="${quiz.description}">Quiz description here.</p>
+                    <p class="text-muted" th:if="${quiz.description != null and !#strings.isEmpty(quiz.description)}"
+                       th:text="${quiz.description}">Quiz description here.</p>
                     <hr/>
-                    <p><strong>Class:</strong> <span th:text="${quiz.classRoom != null ? quiz.classRoom.name : 'N/A'}"></span></p>
-                    <p><strong>Total Questions:</strong> <span th:text="${#lists.size(quiz.questions)}"></span></p>
-                    <p><strong>Average Score:</strong>
-                        <span th:text="${#numbers.formatDecimal(averageScore, 1, 2)} + '%'">0%</span>
-                    </p>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <p><strong>Class:</strong> <span th:text="${quiz.classRoom != null ? quiz.classRoom.name : 'N/A'}"></span></p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Total Questions:</strong> <span th:text="${#lists.size(quiz.questions)}"></span></p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Total Points:</strong> <span th:text="${quiz.totalPoints}"></span></p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Attempts:</strong> <span th:text="${#lists.size(attempts)}"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Cards -->
+                    <div class="row mt-4" th:if="${!#lists.isEmpty(attempts)}">
+                        <div class="col-md-4">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <h4 class="card-title text-white">Average Score</h4>
+                                    <h2 class="text-white" th:text="${#numbers.formatDecimal(averageScore, 1, 2)} + '%'">0%</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-success text-white">
+                                <div class="card-body">
+                                    <h4 class="card-title text-white">Highest Score</h4>
+                                    <h2 class="text-white" th:text="${maxScore} + ' / ' + ${quiz.totalPoints}">0/0</h2>
+                                    <small th:text="'(' + ${#numbers.formatDecimal((maxScore / quiz.totalPoints) * 100, 1, 2)} + '%)'"></small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-warning text-white">
+                                <div class="card-body">
+                                    <h4 class="card-title text-white">Lowest Score</h4>
+                                    <h2 class="text-white" th:text="${minScore} + ' / ' + ${quiz.totalPoints}">0/0</h2>
+                                    <small th:text="'(' + ${#numbers.formatDecimal((minScore / quiz.totalPoints) * 100, 1, 2)} + '%)'"></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -81,6 +128,8 @@
                                 <th>Student</th>
                                 <th>Email</th>
                                 <th>Score</th>
+                                <th>Percentage</th>
+                                <th>Grade</th>
                                 <th>Date Submitted</th>
                             </tr>
                             </thead>
@@ -90,24 +139,82 @@
                                 <td th:text="${a.student.name}">Student Name</td>
                                 <td th:text="${a.student.email}">Email</td>
                                 <td>
-                                    <span th:text="${a.score + ' / ' + quiz.totalPoints}"></span>
-                                    (<span th:text="${#numbers.formatDecimal((a.score / quiz.totalPoints) * 100, 1, 2)}"></span>%)
+                                    <span th:text="${a.score} + ' / ' + ${quiz.totalPoints}"></span>
                                 </td>
-                                <td th:text="${#dates.format(a.submittedAt, 'yyyy-MM-dd HH:mm')}">Date</td>
+                                <td th:with="percentage=${quiz.totalPoints > 0 ? (a.score / quiz.totalPoints) * 100 : 0}">
+                                    <span th:classappend="${percentage >= 90} ? 'score-excellent' :
+                                                          ${percentage >= 80} ? 'score-good' :
+                                                          ${percentage >= 70} ? 'score-average' :
+                                                          'score-poor'"
+                                          th:text="${#numbers.formatDecimal(percentage, 1, 2)} + '%'">
+                                        0%
+                                    </span>
+                                </td>
+                                <td th:with="percentage=${quiz.totalPoints > 0 ? (a.score / quiz.totalPoints) * 100 : 0}">
+                                    <span th:if="${percentage >= 90}" class="badge badge-success">Excellent</span>
+                                    <span th:if="${percentage >= 80 and percentage < 90}" class="badge badge-info">Good</span>
+                                    <span th:if="${percentage >= 70 and percentage < 80}" class="badge badge-warning">Average</span>
+                                    <span th:if="${percentage < 70}" class="badge badge-danger">Needs Improvement</span>
+                                </td>
+                                <td th:text="${#temporals.format(a.submittedAt, 'yyyy-MM-dd HH:mm')}">Date</td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(attempts)}">
-                                <td colspan="5" class="text-center text-muted">No attempts yet for this quiz.</td>
+                                <td colspan="7" class="text-center text-muted">No attempts yet for this quiz.</td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
 
+                    <!-- Score Distribution Chart Info -->
+                    <div th:if="${!#lists.isEmpty(attempts)}" class="mt-4">
+                        <h5>Score Distribution</h5>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card border-success">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-success">Excellent (90-100%)</h6>
+                                        <h3 th:text="${excellentCount}">0</h3>
+                                        <small class="text-muted">students</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-info">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-info">Good (80-89%)</h6>
+                                        <h3 th:text="${goodCount}">0</h3>
+                                        <small class="text-muted">students</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-warning">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-warning">Average (70-79%)</h6>
+                                        <h3 th:text="${averageCount}">0</h3>
+                                        <small class="text-muted">students</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-danger">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-danger">Needs Improvement (&lt;70%)</h6>
+                                        <h3 th:text="${poorCount}">0</h3>
+                                        <small class="text-muted">students</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
 
             <div class="text-center mt-4 mb-5">
-                <a th:href="@{|/teacher/class/${quiz.classRoom.id}|}" class="btn btn-secondary">Back to Class</a>
+                <a th:href="@{|/teacher/class/${quiz.classRoom.id}|}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Back to Class
+                </a>
             </div>
 
         </div> <!-- container-fluid -->

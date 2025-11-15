@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -165,7 +166,6 @@ public class TeacherController {
         return "redirect:/teacher";
     }
 
-    // FIXED: Changed from @RequestParam to @PathVariable for both questionId and quizId
     @GetMapping("/quiz/{quizId}/question/{questionId}/delete")
     public String deleteQuestion(@PathVariable Long quizId, @PathVariable Long questionId) {
         quizService.deleteQuestion(questionId);
@@ -186,6 +186,46 @@ public class TeacherController {
         model.addAttribute("quiz", quiz);
         model.addAttribute("attempts", attempts);
         model.addAttribute("averageScore", averageScore);
+
+        // Calculate statistics if there are attempts
+        if (!attempts.isEmpty()) {
+            double totalPoints = quiz.getTotalPoints();
+
+            // Find max and min scores
+            double maxScore = attempts.stream()
+                    .mapToDouble(Attempt::getScore)
+                    .max()
+                    .orElse(0.0);
+
+            double minScore = attempts.stream()
+                    .mapToDouble(Attempt::getScore)
+                    .min()
+                    .orElse(0.0);
+
+            // Count by grade ranges
+            long excellentCount = attempts.stream()
+                    .filter(a -> totalPoints > 0 && (a.getScore() / totalPoints * 100) >= 90)
+                    .count();
+
+            long goodCount = attempts.stream()
+                    .filter(a -> totalPoints > 0 && (a.getScore() / totalPoints * 100) >= 80 && (a.getScore() / totalPoints * 100) < 90)
+                    .count();
+
+            long averageCount = attempts.stream()
+                    .filter(a -> totalPoints > 0 && (a.getScore() / totalPoints * 100) >= 70 && (a.getScore() / totalPoints * 100) < 80)
+                    .count();
+
+            long poorCount = attempts.stream()
+                    .filter(a -> totalPoints > 0 && (a.getScore() / totalPoints * 100) < 70)
+                    .count();
+
+            model.addAttribute("maxScore", maxScore);
+            model.addAttribute("minScore", minScore);
+            model.addAttribute("excellentCount", excellentCount);
+            model.addAttribute("goodCount", goodCount);
+            model.addAttribute("averageCount", averageCount);
+            model.addAttribute("poorCount", poorCount);
+        }
 
         return "teacher_insidequiz_result";
     }
