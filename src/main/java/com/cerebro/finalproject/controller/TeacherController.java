@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -188,36 +187,44 @@ public class TeacherController {
         model.addAttribute("averageScore", averageScore);
 
         // Calculate statistics if there are attempts
-        if (!attempts.isEmpty()) {
+        if (!attempts.isEmpty() && quiz.getTotalPoints() != null && quiz.getTotalPoints() > 0) {
             double totalPoints = quiz.getTotalPoints();
 
-            // Find max and min scores
-            double maxScore = attempts.stream()
-                    .mapToDouble(Attempt::getScore)
-                    .max()
-                    .orElse(0.0);
+            // Find max and min scores - with null safety
+            double maxScore = 0.0;
+            double minScore = totalPoints;
 
-            double minScore = attempts.stream()
-                    .mapToDouble(Attempt::getScore)
-                    .min()
-                    .orElse(0.0);
+            for (Attempt attempt : attempts) {
+                if (attempt.getScore() != null) {
+                    if (attempt.getScore() > maxScore) {
+                        maxScore = attempt.getScore();
+                    }
+                    if (attempt.getScore() < minScore) {
+                        minScore = attempt.getScore();
+                    }
+                }
+            }
 
-            // Count by grade ranges
-            long excellentCount = attempts.stream()
-                    .filter(a -> totalPoints > 0 && (a.getScore() / totalPoints * 100) >= 90)
-                    .count();
+            // Count by grade ranges - with null safety
+            long excellentCount = 0;
+            long goodCount = 0;
+            long averageCount = 0;
+            long poorCount = 0;
 
-            long goodCount = attempts.stream()
-                    .filter(a -> totalPoints > 0 && (a.getScore() / totalPoints * 100) >= 80 && (a.getScore() / totalPoints * 100) < 90)
-                    .count();
-
-            long averageCount = attempts.stream()
-                    .filter(a -> totalPoints > 0 && (a.getScore() / totalPoints * 100) >= 70 && (a.getScore() / totalPoints * 100) < 80)
-                    .count();
-
-            long poorCount = attempts.stream()
-                    .filter(a -> totalPoints > 0 && (a.getScore() / totalPoints * 100) < 70)
-                    .count();
+            for (Attempt attempt : attempts) {
+                if (attempt.getScore() != null) {
+                    double percentage = (attempt.getScore() / totalPoints) * 100;
+                    if (percentage >= 90) {
+                        excellentCount++;
+                    } else if (percentage >= 80) {
+                        goodCount++;
+                    } else if (percentage >= 70) {
+                        averageCount++;
+                    } else {
+                        poorCount++;
+                    }
+                }
+            }
 
             model.addAttribute("maxScore", maxScore);
             model.addAttribute("minScore", minScore);
@@ -225,6 +232,14 @@ public class TeacherController {
             model.addAttribute("goodCount", goodCount);
             model.addAttribute("averageCount", averageCount);
             model.addAttribute("poorCount", poorCount);
+        } else {
+            // Set default values if no attempts or no points
+            model.addAttribute("maxScore", 0.0);
+            model.addAttribute("minScore", 0.0);
+            model.addAttribute("excellentCount", 0L);
+            model.addAttribute("goodCount", 0L);
+            model.addAttribute("averageCount", 0L);
+            model.addAttribute("poorCount", 0L);
         }
 
         return "teacher_insidequiz_result";
