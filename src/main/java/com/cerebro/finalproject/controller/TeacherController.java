@@ -102,6 +102,7 @@ public class TeacherController {
                               @RequestParam("type") String typeStr,
                               @RequestParam("text") String text,
                               @RequestParam(value = "correct", required = false) String correct,
+                              @RequestParam(value = "points", required = false) Double points,
                               @RequestParam(value = "choice1", required = false) String choice1,
                               @RequestParam(value = "choice2", required = false) String choice2,
                               @RequestParam(value = "choice3", required = false) String choice3,
@@ -115,11 +116,14 @@ public class TeacherController {
         Quiz quiz = quizOpt.get();
         Question.QuestionType type = Question.QuestionType.valueOf(typeStr);
 
+        // Default points to 1.0 if not provided
+        Double questionPoints = (points != null && points > 0) ? points : 1.0;
+
         if (type == Question.QuestionType.MCQ) {
             List<String> choices = List.of(choice1, choice2, choice3, choice4);
-            quizService.addQuestionWithChoices(quiz, text, choices, correct);
+            quizService.addQuestionWithChoices(quiz, text, choices, correct, questionPoints);
         } else {
-            quizService.addQuestion(quiz, type, text, correct);
+            quizService.addQuestion(quiz, type, text, correct, questionPoints);
         }
 
         return "redirect:/teacher/quiz/" + quizId + "/edit";
@@ -190,7 +194,6 @@ public class TeacherController {
         if (!attempts.isEmpty() && quiz.getTotalPoints() != null && quiz.getTotalPoints() > 0) {
             double totalPoints = quiz.getTotalPoints();
 
-            // Find max and min scores - with null safety
             double maxScore = 0.0;
             double minScore = totalPoints;
 
@@ -205,7 +208,6 @@ public class TeacherController {
                 }
             }
 
-            // Count by grade ranges - with null safety
             long excellentCount = 0;
             long goodCount = 0;
             long averageCount = 0;
@@ -233,7 +235,6 @@ public class TeacherController {
             model.addAttribute("averageCount", averageCount);
             model.addAttribute("poorCount", poorCount);
         } else {
-            // Set default values if no attempts or no points
             model.addAttribute("maxScore", 0.0);
             model.addAttribute("minScore", 0.0);
             model.addAttribute("excellentCount", 0L);

@@ -29,6 +29,9 @@ public class Question {
     @Column(name = "q_index")
     private Integer qIndex;
 
+    @Column(name = "points")
+    private Double points = 1.0;  // NEW: Individual question points
+
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Choice> choices = new ArrayList<>();
 
@@ -39,7 +42,8 @@ public class Question {
         MCQ,    // Multiple Choice
         TF,     // True/False
         IDENT,  // Identification
-        ESSAY   // Essay
+        ESSAY,  // Essay
+        CODING  // NEW: Coding Question
     }
 
     // Constructors
@@ -98,6 +102,14 @@ public class Question {
 
     public void setQIndex(Integer qIndex) {
         this.qIndex = qIndex;
+    }
+
+    public Double getPoints() {
+        return points;
+    }
+
+    public void setPoints(Double points) {
+        this.points = points;
     }
 
     public List<Choice> getChoices() {
