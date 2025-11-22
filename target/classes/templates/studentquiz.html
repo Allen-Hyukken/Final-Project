@@ -14,65 +14,237 @@
     <link th:href="@{/plugins/chartist/css/chartist.min.css}" rel="stylesheet">
     <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel="stylesheet">
-
-    <!-- Prism.js for Syntax Highlighting -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
 
     <style>
-        .question-card {
-            border-left: 4px solid #007bff;
-            margin-bottom: 2rem;
+        body {
+            position: relative;
+            background-color: #182848;
+            min-height: 100vh;
         }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -2;
+            filter: brightness(0.55);
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            z-index: -1;
+        }
+
+        .content-body {
+            position: relative;
+            z-index: 10;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 16px !important;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2, h3, h4, h5, strong, .text-muted, .breadcrumb-item, .breadcrumb-item a {
+            color: white !important;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .question-card {
+            border-left: 4px solid #7f7fff !important;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .question-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #7f7fff, #5555ff);
+            box-shadow: 0 0 15px rgba(127, 127, 255, 0.6);
+        }
+
+        .coding-question-card {
+            border-left: 4px solid #17a2b8 !important;
+        }
+
+        .coding-question-card::before {
+            background: linear-gradient(180deg, #17a2b8, #117a8b);
+            box-shadow: 0 0 15px rgba(23, 162, 184, 0.6);
+        }
+
         .question-number {
-            background: #007bff;
+            background: linear-gradient(135deg, #7f7fff 0%, #5555ff 100%);
             color: white;
-            padding: 5px 15px;
+            padding: 8px 18px;
             border-radius: 20px;
             display: inline-block;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(127, 127, 255, 0.4);
+            font-weight: 600;
         }
+
+        .badge-info {
+            background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%) !important;
+            box-shadow: 0 2px 8px rgba(23, 162, 184, 0.4);
+            padding: 6px 12px;
+        }
+
         .form-check {
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            transition: background-color 0.2s;
+            padding: 14px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
+
         .form-check:hover {
-            background-color: #f8f9fa;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(127, 127, 255, 0.2);
         }
+
         .form-check-input {
             margin-top: 0.5rem;
         }
-        .submit-section {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 10px;
-            margin-top: 30px;
+
+        .form-check-label {
+            color: white !important;
+            cursor: pointer;
         }
-        .coding-question-card {
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.2) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            color: white !important;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.25) !important;
+            box-shadow: 0 0 20px rgba(127, 127, 255, 0.5);
+            border-color: rgba(127, 127, 255, 0.8) !important;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .submit-section {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 16px;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%) !important;
+            border: none !important;
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-success::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-success:hover::before {
+            left: 100%;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(108, 117, 125, 0.8) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            background: rgba(108, 117, 125, 0.9) !important;
+        }
+
+        .alert-info {
+            background: rgba(23, 162, 184, 0.2) !important;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(23, 162, 184, 0.4);
             border-left: 4px solid #17a2b8;
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.3);
         }
 
         /* Code Editor Styling */
         .code-editor-container {
             position: relative;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
         }
 
         .code-editor-header {
-            background: #2d2d2d;
-            padding: 10px 15px;
+            background: linear-gradient(135deg, #2d2d2d 0%, #1e1e1e 100%);
+            padding: 12px 18px;
             display: flex;
             align-items: center;
             gap: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .editor-dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
+            box-shadow: 0 0 10px currentColor;
         }
 
         .dot-red { background: #ff5f56; }
@@ -81,9 +253,10 @@
 
         .editor-title {
             color: #999;
-            font-size: 12px;
+            font-size: 13px;
             margin-left: 10px;
             font-family: monospace;
+            font-weight: 600;
         }
 
         .code-editor-wrapper {
@@ -96,52 +269,51 @@
             left: 0;
             top: 0;
             bottom: 0;
-            width: 45px;
-            background: #1e1e1e;
-            border-right: 1px solid #333;
-            padding: 15px 5px;
+            width: 50px;
+            background: #1a1a1a;
+            border-right: 1px solid #404040;
+            padding: 18px 8px;
             text-align: right;
             color: #858585;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Courier New', monospace;
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.6;
             user-select: none;
             overflow: hidden;
         }
 
         .code-editor {
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Courier New', monospace;
             font-size: 14px;
             background-color: #1e1e1e;
             color: #d4d4d4;
             border: none;
-            padding: 15px 15px 15px 55px;
-            min-height: 300px;
+            padding: 18px 18px 18px 60px;
+            min-height: 320px;
             resize: vertical;
             width: 100%;
-            line-height: 1.5;
+            line-height: 1.6;
             tab-size: 4;
             outline: none;
         }
 
         .code-editor::placeholder {
-            color: #858585;
+            color: #606060;
         }
 
-        /* Syntax Highlighting Overlay */
         .code-highlight {
             position: absolute;
             top: 0;
-            left: 55px;
+            left: 60px;
             right: 0;
             bottom: 0;
-            padding: 15px 15px 15px 0;
+            padding: 18px 18px 18px 0;
             pointer-events: none;
             white-space: pre-wrap;
             word-wrap: break-word;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Courier New', monospace;
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.6;
             color: transparent;
             overflow: hidden;
         }
@@ -158,11 +330,20 @@
         .code-highlight .class-name { color: #4ec9b0; }
 
         .code-footer {
-            background: #2d2d2d;
-            padding: 8px 15px;
-            font-size: 11px;
+            background: linear-gradient(135deg, #2d2d2d 0%, #1e1e1e 100%);
+            padding: 10px 18px;
+            font-size: 12px;
             color: #858585;
             font-family: monospace;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .breadcrumb {
+            background: transparent !important;
+        }
+
+        hr {
+            border-color: rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
@@ -170,12 +351,7 @@
 <body>
 
 <div id="main-wrapper">
-
-    <!-- Nav Header -->
     <div th:replace="fragments/navheader-student :: navheader-student"></div>
-
-
-    <!-- Header -->
     <div th:replace="fragments/header :: header"></div>
 
     <div class="content-body">
@@ -192,11 +368,8 @@
             </div>
         </div>
 
-        <!-- Quiz Content -->
         <div class="container-fluid">
             <div class="col-lg-10 mx-auto">
-
-                <!-- Quiz Header -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-body">
                         <h2 class="card-title mb-3" th:text="${quiz.title}">Quiz Title</h2>
@@ -222,15 +395,12 @@
                     </div>
                 </div>
 
-                <!-- Quiz Form -->
                 <form th:action="@{|/student/class/${quiz.classRoom.id}/quiz/${quiz.id}/submit|}"
                       method="post"
                       onsubmit="return confirm('Are you sure you want to submit your answers? You cannot change them after submission.');">
 
-                    <!-- CSRF Token -->
                     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
-                    <!-- Questions -->
                     <div th:each="q, qi : ${quiz.questions}"
                          th:class="${q.type.name() == 'CODING' ? 'card coding-question-card shadow-sm' : 'card question-card shadow-sm'}">
                         <div class="card-body">
@@ -302,7 +472,6 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="code-editor-container">
-                                        <!-- Editor Header -->
                                         <div class="code-editor-header">
                                             <div class="editor-dot dot-red"></div>
                                             <div class="editor-dot dot-yellow"></div>
@@ -310,7 +479,6 @@
                                             <div class="editor-title">solution.js</div>
                                         </div>
 
-                                        <!-- Code Editor -->
                                         <div class="code-editor-wrapper">
                                             <div th:id="'line-numbers-' + ${q.id}" class="line-numbers">1</div>
                                             <div th:id="'code-highlight-' + ${q.id}" class="code-highlight"></div>
@@ -328,7 +496,6 @@ function solution() {
                                                     spellcheck="false"></textarea>
                                         </div>
 
-                                        <!-- Editor Footer -->
                                         <div class="code-footer">
                                             <i class="fa fa-lightbulb-o"></i> Tip: Use Tab for indentation | Syntax highlighting active
                                         </div>
@@ -349,11 +516,9 @@ function solution() {
                                     </small>
                                 </div>
                             </div>
-
                         </div>
                     </div>
 
-                    <!-- Submit Section -->
                     <div class="submit-section text-center">
                         <h5 class="mb-4">Ready to Submit?</h5>
                         <p class="text-muted mb-4">
@@ -370,7 +535,6 @@ function solution() {
                         </a>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>
@@ -384,70 +548,33 @@ function solution() {
 <script th:src="@{/js/gleek.js}"></script>
 <script th:src="@{/js/styleSwitcher.js}"></script>
 
-<script th:src="@{/plugins/chart.js/Chart.bundle.min.js}"></script>
-<script th:src="@{/plugins/circle-progress/circle-progress.min.js}"></script>
-<script th:src="@{/plugins/d3v3/index.js}"></script>
-<script th:src="@{/plugins/topojson/topojson.min.js}"></script>
-<script th:src="@{/plugins/datamaps/datamaps.world.min.js}"></script>
-<script th:src="@{/plugins/raphael/raphael.min.js}"></script>
-<script th:src="@{/plugins/morris/morris.min.js}"></script>
-<script th:src="@{/plugins/moment/moment.min.js}"></script>
-<script th:src="@{/plugins/pg-calendar/js/pignose.calendar.min.js}"></script>
-<script th:src="@{/plugins/chartist/js/chartist.min.js}"></script>
-<script th:src="@{/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js}"></script>
-<script th:src="@{/js/dashboard/dashboard-1.js}"></script>
-
-<!-- Syntax Highlighting Script -->
 <script>
-    // Simple syntax highlighter
     function highlightSyntax(code) {
-        // Keywords
         const keywords = ['function', 'const', 'let', 'var', 'if', 'else', 'for', 'while', 'return',
             'class', 'new', 'this', 'import', 'export', 'from', 'async', 'await',
             'try', 'catch', 'throw', 'break', 'continue', 'switch', 'case', 'default',
             'typeof', 'instanceof', 'delete', 'void', 'yield', 'in', 'of', 'do'];
 
         let highlighted = code;
-
-        // Escape HTML
-        highlighted = highlighted.replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-
-        // Comments (single line)
+        highlighted = highlighted.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         highlighted = highlighted.replace(/(\/\/.*$)/gm, '<span class="comment">$1</span>');
-
-        // Comments (multi-line)
         highlighted = highlighted.replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="comment">$1</span>');
-
-        // Strings (double quotes)
         highlighted = highlighted.replace(/("(?:[^"\\]|\\.)*")/g, '<span class="string">$1</span>');
-
-        // Strings (single quotes)
         highlighted = highlighted.replace(/('(?:[^'\\]|\\.)*')/g, '<span class="string">$1</span>');
-
-        // Strings (template literals)
         highlighted = highlighted.replace(/(`(?:[^`\\]|\\.)*`)/g, '<span class="string">$1</span>');
-
-        // Numbers
         highlighted = highlighted.replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>');
 
-        // Keywords
         keywords.forEach(keyword => {
             const regex = new RegExp('\\b(' + keyword + ')\\b', 'g');
             highlighted = highlighted.replace(regex, '<span class="keyword">$1</span>');
         });
 
-        // Function names (before parentheses)
         highlighted = highlighted.replace(/\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?=\()/g, '<span class="function">$1</span>');
-
-        // Properties (after dot)
         highlighted = highlighted.replace(/\.([a-zA-Z_$][a-zA-Z0-9_$]*)/g, '.<span class="property">$1</span>');
 
         return highlighted;
     }
 
-    // Update line numbers
     function updateLineNumbers(textarea, lineNumbersDiv) {
         const lines = textarea.value.split('\n').length;
         let numbers = '';
@@ -457,7 +584,6 @@ function solution() {
         lineNumbersDiv.textContent = numbers;
     }
 
-    // Initialize all code editors
     document.addEventListener('DOMContentLoaded', function() {
         const codeEditors = document.querySelectorAll('.code-editor');
 
@@ -466,7 +592,6 @@ function solution() {
             const highlightDiv = document.getElementById('code-highlight-' + questionId);
             const lineNumbersDiv = document.getElementById('line-numbers-' + questionId);
 
-            // Handle Tab key
             editor.addEventListener('keydown', function(e) {
                 if (e.key === 'Tab') {
                     e.preventDefault();
@@ -477,7 +602,6 @@ function solution() {
                 }
             });
 
-            // Update syntax highlighting and line numbers
             function updateHighlight() {
                 if (highlightDiv) {
                     highlightDiv.innerHTML = highlightSyntax(editor.value);
@@ -487,10 +611,7 @@ function solution() {
                 }
             }
 
-            // Initial highlight
             updateHighlight();
-
-            // Update on input
             editor.addEventListener('input', updateHighlight);
             editor.addEventListener('scroll', function() {
                 if (highlightDiv) {
@@ -504,9 +625,7 @@ function solution() {
         });
     });
 
-    // Auto-save warning
     let formModified = false;
-
     document.querySelectorAll('input, textarea, select').forEach(element => {
         element.addEventListener('change', function() {
             formModified = true;

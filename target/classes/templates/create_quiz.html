@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-
     <meta name="theme-name" content="quixlab" />
 
     <title>Create New Quiz</title>
@@ -14,24 +13,147 @@
     <link th:href="@{/plugins/chartist/css/chartist.min.css}" rel="stylesheet">
     <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <style>
+        body {
+            position: relative;
+            background-color: #182848;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -2;
+            filter: brightness(0.55);
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            z-index: -1;
+        }
+
+        .content-body {
+            position: relative;
+            z-index: 10;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 16px !important;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h3, h4, h5, .card-title, label, .breadcrumb-item, .breadcrumb-item a {
+            color: white !important;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .breadcrumb {
+            background-color: transparent !important;
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.2) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            color: white !important;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.25) !important;
+            box-shadow: 0 0 20px rgba(127, 127, 255, 0.5);
+            border-color: rgba(127, 127, 255, 0.8) !important;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%) !important;
+            border: none !important;
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-success::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-success:hover::before {
+            left: 100%;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(108, 117, 125, 0.8) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            background: rgba(108, 117, 125, 0.9) !important;
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.5);
+        }
+
+        .card-body {
+            color: white !important;
+        }
+    </style>
 </head>
 
 <body>
 <div id="main-wrapper">
-
-    <!--**********************************
-        Nav header start
-    ***********************************-->
     <div th:replace="fragments/navheader-teacher :: navheader-teacher"></div>
-
-    <!--**********************************
-        Header
-    ***********************************-->
     <div th:replace="fragments/header :: header"></div>
 
-    <!--**********************************
-        Content body start
-    ***********************************-->
     <div class="content-body">
         <div class="row mx-0">
             <div class="col p-md-0">
@@ -44,7 +166,6 @@
         </div>
 
         <div class="container-fluid">
-            <!-- Create Quiz Header -->
             <div class="card mb-4">
                 <div class="card-body">
                     <h4 class="card-title mb-3">Create a New Quiz</h4>
@@ -65,25 +186,17 @@
                     </form>
                 </div>
             </div>
-
-        </div> <!-- container-fluid -->
+        </div>
     </div>
-    <!--**********************************
-        Content body end
-    ***********************************-->
 
     <div th:replace="fragments/footer :: footer"></div>
 </div>
 
-<!--**********************************
-    Scripts
-***********************************-->
 <script th:src="@{/plugins/common/common.min.js}"></script>
 <script th:src="@{/js/custom.min.js}"></script>
 <script th:src="@{/js/settings.js}"></script>
 <script th:src="@{/js/gleek.js}"></script>
 <script th:src="@{/js/styleSwitcher.js}"></script>
-
 <script th:src="@{/plugins/chart.js/Chart.bundle.min.js}"></script>
 <script th:src="@{/plugins/circle-progress/circle-progress.min.js}"></script>
 <script th:src="@{/plugins/d3v3/index.js}"></script>
@@ -96,6 +209,5 @@
 <script th:src="@{/plugins/chartist/js/chartist.min.js}"></script>
 <script th:src="@{/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js}"></script>
 <script th:src="@{/js/dashboard/dashboard-1.js}"></script>
-
 </body>
 </html>

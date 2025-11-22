@@ -10,30 +10,127 @@
     <title>Teacher Dashboard - My Classes</title>
 
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon.png}">
-
     <link th:href="@{/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
-
     <link th:href="@{/plugins/chartist/css/chartist.min.css}" rel="stylesheet">
     <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
-
     <link th:href="@{/css/style.css}" rel="stylesheet">
 
     <style>
+        body {
+            position: relative;
+            background-color: #182848;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -2;
+            filter: brightness(0.55);
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            z-index: -1;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 16px !important;
+            transition: all 0.3s ease !important;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(127, 127, 255, 0.3) !important;
+        }
+
+        h3, h4, h5, .text-muted, strong, .card-title {
+            color: white !important;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .basic-form .form-control {
+            background: rgba(255, 255, 255, 0.25) !important;
+            backdrop-filter: blur(10px);
+            color: #fff !important;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .basic-form .form-control:focus {
+            background: rgba(255, 255, 255, 0.35) !important;
+            box-shadow: 0 0 20px rgba(127, 127, 255, 0.5);
+            border-color: rgba(127, 127, 255, 0.8);
+        }
+
+        .basic-form .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%) !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .breadcrumb {
+            background-color: transparent !important;
+        }
+
+        .breadcrumb-item, .breadcrumb-item a, .breadcrumb-item.active {
+            color: white !important;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+        }
+
         .class-card {
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.3s, box-shadow 0.3s;
             height: 100%;
             cursor: pointer;
+            background: rgba(255, 255, 255, 0.12) !important;
+            overflow: hidden;
         }
 
         .class-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 45px rgba(127, 127, 255, 0.4) !important;
         }
 
         .class-banner {
             height: 150px;
             width: 100%;
             object-fit: cover;
+            filter: brightness(0.85);
+            transition: filter 0.3s ease;
+        }
+
+        .class-card:hover .class-banner {
+            filter: brightness(1);
         }
 
         .class-code {
@@ -41,28 +138,62 @@
             font-weight: bold;
             font-size: 1.1rem;
             letter-spacing: 1px;
+            color: #7f7fff !important;
+            text-shadow: 0 0 10px rgba(127, 127, 255, 0.5);
         }
 
         .copy-code {
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.3s;
         }
 
         .copy-code:hover {
-            color: #007bff !important;
+            color: #9f9fff !important;
+            text-shadow: 0 0 15px rgba(127, 127, 255, 0.8);
+        }
+
+        .custom-file-label {
+            background: rgba(255, 255, 255, 0.25) !important;
+            color: rgba(255, 255, 255, 0.9) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .custom-file-label::after {
+            background: rgba(127, 127, 255, 0.3);
+            color: white;
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .card-footer {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .card-body {
+            color: white !important;
+        }
+
+        .card-body h5, .card-body p, .card-body small, .card-body strong {
+            color: white !important;
+        }
+
+        small.text-muted {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        .empty-state i {
+            color: rgba(255, 255, 255, 0.3) !important;
         }
     </style>
 </head>
 <body>
 
 <div id="main-wrapper">
-
     <div th:replace="fragments/navheader-teacher :: navheader-teacher"></div>
-
     <div th:replace="fragments/header :: header"></div>
 
     <div class="content-body">
-
         <div class="row mx-0">
             <div class="col p-md-0">
                 <ol class="breadcrumb">
@@ -74,30 +205,27 @@
 
         <div class="container-fluid">
             <div class="col-lg-5 mb-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Create a New Class</h5>
+                <div class="card p-4">
+                    <h5 class="card-title text-center">Create a New Class</h5>
 
-                        <form th:action="@{/teacher/create}" method="post" enctype="multipart/form-data">
-                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <form th:action="@{/teacher/create}" method="post" enctype="multipart/form-data">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-                            <div class="form-group">
-                                <input type="text" class="form-control input-rounded"
-                                       name="name" placeholder="Enter Class Name (e.g., English 10)" required>
-                            </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control input-rounded"
+                                   name="name" placeholder="Enter Class Name (e.g., English 10)" required>
+                        </div>
 
-                            <div class="custom-file mb-3">
-                                <input type="file" class="custom-file-input" id="classPic" name="banner" accept="image/*">
-                                <label class="custom-file-label" for="classPic">Upload Class Banner (Optional)</label>
-                            </div>
-                            <small class="form-text text-muted mb-3">Recommended size: 1200x400px. Max 5MB.</small>
+                        <div class="custom-file mb-3">
+                            <input type="file" class="custom-file-input" id="classPic" name="banner" accept="image/*">
+                            <label class="custom-file-label" for="classPic">Upload Class Banner (Optional)</label>
+                        </div>
+                        <small class="form-text text-muted mb-3" style="color: rgba(255, 255, 255, 0.8) !important;">Recommended size: 1200x400px. Max 5MB.</small>
 
-                            <div class="text-right">
-                                <button type="submit" class="btn btn-success btn-rounded px-4">Create Class</button>
-                            </div>
-                        </form>
-
-                    </div>
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-success btn-rounded px-4">Create Class</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -109,7 +237,6 @@
                     <div class="row" th:if="${!#lists.isEmpty(classes)}">
                         <div class="col-md-6 col-lg-3 mb-4" th:each="c : ${classes}">
                             <div class="card shadow-sm class-card" th:onclick="|window.location.href='/teacher/class/' + ${c.id}|">
-                                <!-- Class Banner -->
                                 <img class="class-banner"
                                      th:src="@{|/classroom/${c.id}/banner|}"
                                      alt="Class Banner" />
@@ -139,19 +266,18 @@
                     <div th:if="${#lists.isEmpty(classes)}" class="text-center mt-4">
                         <p class="text-muted">You haven't created any classes yet. Use the form above to create one.</p>
                     </div>
-
                 </div>
             </div>
         </div>
     </div>
     <div th:replace="fragments/footer :: footer"></div>
 </div>
+
 <script th:src="@{/plugins/common/common.min.js}"></script>
 <script th:src="@{/js/custom.min.js}"></script>
 <script th:src="@{/js/settings.js}"></script>
 <script th:src="@{/js/gleek.js}"></script>
 <script th:src="@{/js/styleSwitcher.js}"></script>
-
 <script th:src="@{/plugins/chart.js/Chart.bundle.min.js}"></script>
 <script th:src="@{/plugins/circle-progress/circle-progress.min.js}"></script>
 <script th:src="@{/plugins/d3v3/index.js}"></script>
@@ -166,9 +292,6 @@
 <script th:src="@{/js/dashboard/dashboard-1.js}"></script>
 
 <script>
-    /**
-     * Copies the text content of an element and shows a brief feedback message.
-     */
     function copyClassCode(codeElementId, feedbackElementId) {
         const codeElement = document.getElementById(codeElementId);
         const feedbackElement = document.getElementById(feedbackElementId);
@@ -180,7 +303,6 @@
 
         const codeToCopy = codeElement.textContent.trim();
 
-        // 1. Use the modern Clipboard API (Recommended)
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(codeToCopy).then(() => {
                 showFeedback(feedbackElement);
@@ -189,14 +311,10 @@
                 fallbackCopy(codeElement, codeToCopy, feedbackElement);
             });
         } else {
-            // 2. Fallback method for older browsers
             fallbackCopy(codeElement, codeToCopy, feedbackElement);
         }
     }
 
-    /**
-     * Fallback copy method using document.execCommand('copy').
-     */
     function fallbackCopy(codeElement, codeToCopy, feedbackElement) {
         try {
             const range = document.createRange();
@@ -217,9 +335,6 @@
         }
     }
 
-    /**
-     * Shows the 'Copied!' feedback message temporarily.
-     */
     function showFeedback(feedbackElement) {
         if (feedbackElement) {
             feedbackElement.style.display = 'inline';
@@ -229,7 +344,6 @@
         }
     }
 
-    // Update custom file input label with selected filename
     document.getElementById('classPic').addEventListener('change', function(e) {
         var fileName = e.target.files[0] ? e.target.files[0].name : 'Upload Class Banner (Optional)';
         var label = e.target.nextElementSibling;

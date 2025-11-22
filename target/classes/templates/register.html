@@ -7,31 +7,251 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Cerebro Metron - Register</title>
 
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/images/favicon.png}">
-
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
-          integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
-          crossorigin="anonymous">
-
-    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
     <link th:href="@{/css/style.css}" rel="stylesheet">
 
     <style>
-        .password-requirements {
-            font-size: 0.85rem;
+        body {
+            height: 100vh;
+            margin: 0;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            filter: brightness(0.5);
+            animation: subtleZoom 20s ease-in-out infinite;
+        }
+
+        @keyframes subtleZoom {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 2;
+            background: linear-gradient(135deg, rgba(127, 127, 255, 0.1), rgba(24, 40, 72, 0.3));
+        }
+
+        .login-form-bg {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 3;
+            padding: 40px 0;
+        }
+
+        .login-form {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            animation: fadeInUp 0.6s ease-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-form:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo-container img {
+            width: 80px;
+            height: 80px;
+            display: block;
+            margin: 0 auto;
+            filter: drop-shadow(0 0 20px rgba(127, 127, 255, 0.6));
+        }
+
+        h3 {
+            font-weight: 800;
+            color: #ffffff !important;
+            text-shadow: 0 0 20px rgba(127, 127, 255, 0.8),
+            0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+        }
+
+        .register-heading {
+            margin-bottom: 25px;
             margin-top: 5px;
         }
+
+        .login-input .form-control {
+            background: rgba(255, 255, 255, 0.25) !important;
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            height: 50px;
+            font-size: 15px;
+            padding: 0 18px;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .login-input .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .login-input .form-control:focus {
+            background: rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 0 20px rgba(127, 127, 255, 0.6),
+            inset 0 0 10px rgba(255, 255, 255, 0.1);
+            border-color: rgba(127, 127, 255, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .login-form__btn {
+            background: linear-gradient(135deg, #7f7fff 0%, #5555ff 100%);
+            color: #fff;
+            border-radius: 12px;
+            height: 52px;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border: none;
+            box-shadow: 0 8px 20px rgba(127, 127, 255, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-form__btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .login-form__btn:hover::before {
+            left: 100%;
+        }
+
+        .login-form__btn:hover {
+            background: linear-gradient(135deg, #6464ff 0%, #4444ee 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(127, 127, 255, 0.6);
+        }
+
+        .radio-inline {
+            font-size: 16px;
+            margin-right: 25px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .radio-inline:hover {
+            color: #ffffff;
+        }
+
+        .radio-inline input[type="radio"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        .login-form__footer {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
+        }
+
+        .login-form__footer a {
+            font-weight: bold;
+            color: #7f7fff;
+            text-shadow: 0 0 10px rgba(127, 127, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .login-form__footer a:hover {
+            color: #9f9fff;
+            text-shadow: 0 0 15px rgba(127, 127, 255, 0.8);
+            text-decoration: none;
+        }
+
+        .password-requirements {
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
         .requirement {
-            color: #dc3545;
+            color: rgba(255, 100, 100, 0.9);
+            background: rgba(255, 100, 100, 0.1);
+            padding: 5px 10px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 5px;
+            transition: all 0.3s ease;
         }
+
         .requirement.valid {
-            color: #28a745;
+            color: rgba(100, 255, 100, 0.9);
+            background: rgba(100, 255, 100, 0.1);
         }
+
         .requirement i {
             font-size: 0.75rem;
             margin-right: 5px;
+        }
+
+        .text-success, .text-danger {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .login-form {
+                padding: 30px 25px;
+            }
         }
     </style>
 </head>
@@ -45,29 +265,23 @@
                 <div class="form-input-content">
                     <div class="card login-form mb-0">
                         <div class="card-body pt-5">
-
-                            <!-- Title -->
                             <a class="text-center" th:href="@{/}">
-                                <h3>REGISTER</h3>
+                                <h3 class="register-heading">REGISTER</h3>
                             </a>
 
-                            <!-- Registration Form -->
                             <form th:action="@{/register}" th:object="${user}" method="post"
                                   class="mt-5 mb-5 login-input" id="registrationForm">
 
-                                <!-- Name -->
                                 <div class="form-group">
                                     <input type="text" th:field="*{name}" class="form-control"
                                            placeholder="Full Name" required>
                                 </div>
 
-                                <!-- Email -->
                                 <div class="form-group">
                                     <input type="email" th:field="*{email}" class="form-control"
                                            placeholder="Email Address" required>
                                 </div>
 
-                                <!-- Password -->
                                 <div class="form-group">
                                     <input type="password" th:field="*{password}" class="form-control"
                                            id="password" placeholder="Password"
@@ -79,7 +293,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Confirm Password -->
                                 <div class="form-group">
                                     <input type="password" class="form-control"
                                            id="confirmPassword" placeholder="Confirm Password"
@@ -89,7 +302,6 @@
                                     </small>
                                 </div>
 
-                                <!-- Role Selection -->
                                 <div class="form-group text-center">
                                     <label class="radio-inline mr-3">
                                         <input type="radio" name="role" value="TEACHER" required> Teacher
@@ -99,26 +311,22 @@
                                     </label>
                                 </div>
 
-                                <!-- Submit Button -->
                                 <button type="submit" class="btn login-form__btn submit w-100" id="submitBtn">
                                     Sign Up
                                 </button>
 
-                                <!-- Success/Error Messages -->
                                 <div th:if="${param.success}" class="text-success text-center mt-3">
-                                    Registration successful! You may now log in.
+                                    ✓ Registration successful! You may now log in.
                                 </div>
                                 <div th:if="${param.error}" class="text-danger text-center mt-3">
-                                    Registration failed. Email may already be in use or password too short.
+                                    ✗ Registration failed. Email may already be in use or password too short.
                                 </div>
                             </form>
 
-                            <!-- Footer -->
                             <p class="mt-5 login-form__footer">
                                 Already have an account?
                                 <a th:href="@{/login}" class="text-primary">Sign In</a> now
                             </p>
-
                         </div>
                     </div>
                 </div>
@@ -127,9 +335,6 @@
     </div>
 </div>
 
-<!--**********************************
-    Scripts
-***********************************-->
 <script th:src="@{/plugins/common/common.min.js}"></script>
 <script th:src="@{/js/custom.min.js}"></script>
 <script th:src="@{/js/settings.js}"></script>
@@ -137,7 +342,6 @@
 <script th:src="@{/js/styleSwitcher.js}"></script>
 
 <script>
-    // Password validation
     const passwordInput = document.getElementById('password');
     const confirmPasswordInput = document.getElementById('confirmPassword');
     const lengthRequirement = document.getElementById('lengthRequirement');
@@ -145,11 +349,9 @@
     const submitBtn = document.getElementById('submitBtn');
     const form = document.getElementById('registrationForm');
 
-    // Check password length
     passwordInput.addEventListener('input', function() {
         const password = this.value;
 
-        // Check length requirement
         if (password.length >= 6) {
             lengthRequirement.classList.add('valid');
             lengthRequirement.innerHTML = '<i class="fa fa-check-circle"></i> At least 6 characters';
@@ -158,11 +360,9 @@
             lengthRequirement.innerHTML = '<i class="fa fa-times-circle"></i> At least 6 characters';
         }
 
-        // Check if passwords match
         checkPasswordMatch();
     });
 
-    // Check if passwords match
     confirmPasswordInput.addEventListener('input', checkPasswordMatch);
 
     function checkPasswordMatch() {
@@ -184,7 +384,6 @@
         }
     }
 
-    // Form submission validation
     form.addEventListener('submit', function(e) {
         const password = passwordInput.value;
         const confirmPassword = confirmPasswordInput.value;

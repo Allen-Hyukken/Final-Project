@@ -5,31 +5,58 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-name" content="quixlab" />
-
+    /
     <title>Student Dashboard - Quiz App</title>
-
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon.png}">
     <link th:href="@{/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
     <link th:href="@{/plugins/chartist/css/chartist.min.css}" rel="stylesheet">
     <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel="stylesheet">
+    <style>
+        /* TOP HEADER BAR: Light Gray-White */
+        .nav-header {
+            background-color: #e8e8e8 !important; /* Light gray-white background */
+            background-image: none !important;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid #d4d4d4;
+        }
+
+        /* LOGO/SIDEBAR AREA: White Background para tanggalin ang Violet/Purple */
+        .nav-header .brand-logo {
+            background-color: white !important; /* Solid White ang background ng logo area */
+            /* Maaari ring gamitin ang #e8e8e8 kung gusto mong pareho sa header */
+        }
+
+        .nav-header .brand-title {
+            color: #333333 !important; /* Dark gray text para makita sa white background */
+            font-weight: bold;
+            font-size: 1.15rem;
+            text-shadow: none;
+        }
+
+        /* Siguraduhin na ang logo images ay madilim para kitang-kita sa puting background */
+        .nav-header .logo-abbr img,
+        .nav-header .logo-compact img,
+        .nav-header .brand-title img {
+            filter: brightness(0.7) contrast(1.2); /* Adjust logo brightness kung needed */
+        }
+    </style>
 </head>
 <body>
-
-    <div th:fragment="navheader-student">
-        <div class="nav-header">
-            <div class="brand-logo">
-                <a th:href="@{/student}">
-                    <b class="logo-abbr"><img th:src="@{/images/logo.png}" alt=""></b>
-                    <span class="logo-compact"><img th:src="@{/images/logo-compact.png}" alt=""></span>
-                    <span class="brand-title">
+<div th:fragment="navheader-student">
+    <div class="nav-header">
+        <div class="brand-logo">
+            <a th:href="@{/student}">
+                <b class="logo-abbr"><img th:src="@{/images/logo.png}" alt=""></b>
+                <span class="logo-compact"><img th:src="@{/images/logo-compact.png}" alt=""></span>
+                <span class="brand-title">
                         <img th:src="@{/images/logo-text.png}" alt="">
                     </span>
-                </a>
-            </div>
+            </a>
         </div>
     </div>
-
-
+</div>
 </body>
 </html>

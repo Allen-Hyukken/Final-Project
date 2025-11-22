@@ -6,19 +6,111 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="theme-name" content="quixlab" />
 
-    <title>Student Dashboard - Quiz App</title>
+    <title>Header</title>
 
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon.png}">
-    <link th:href="@{/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
-    <link th:href="@{/plugins/chartist/css/chartist.min.css}" rel="stylesheet">
-    <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel="stylesheet">
+    <style>
+        .header {
+            background: rgba(255, 255, 255, 0.12) !important;
+            background-image: none !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(127, 127, 255, 0.08), transparent);
+            z-index: -1;
+        }
+
+        .header .user-img img {
+            border: 2px solid rgba(127, 127, 255, 0.6);
+            box-shadow: 0 0 15px rgba(127, 127, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .header .user-img img:hover {
+            border-color: rgba(127, 127, 255, 0.9);
+            box-shadow: 0 0 20px rgba(127, 127, 255, 0.6);
+            transform: scale(1.05);
+        }
+
+        .header .activity.active {
+            background: #4CAF50;
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(76, 175, 80, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(76, 175, 80, 0.9);
+            }
+        }
+
+        .drop-down.dropdown-profile {
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            animation: fadeInDown 0.3s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-content-body ul li a,
+        .dropdown-content-body ul li button {
+            color: white !important;
+            transition: all 0.3s ease;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 5px 10px;
+        }
+
+        .dropdown-content-body ul li a:hover,
+        .dropdown-content-body ul li button:hover {
+            background: rgba(127, 127, 255, 0.2) !important;
+            transform: translateX(5px);
+        }
+
+        .dropdown-content-body ul li a i,
+        .dropdown-content-body ul li button i {
+            filter: drop-shadow(0 0 5px rgba(127, 127, 255, 0.5));
+        }
+
+        .hamburger .toggle-icon {
+            color: white;
+            filter: drop-shadow(0 0 8px rgba(127, 127, 255, 0.5));
+            transition: all 0.3s ease;
+        }
+
+        .hamburger:hover .toggle-icon {
+            filter: drop-shadow(0 0 12px rgba(127, 127, 255, 0.8));
+            transform: scale(1.1);
+        }
+    </style>
 </head>
 <body>
 
-<!--**********************************
-    Header Fragment
-***********************************-->
 <div th:fragment="header" class="header">
     <div class="header-content clearfix">
         <div class="nav-control">
@@ -29,7 +121,6 @@
 
         <div class="header-right">
             <ul class="clearfix">
-                <!-- User Profile -->
                 <li class="icons dropdown">
                     <div class="user-img c-pointer position-relative" data-toggle="dropdown">
                         <span class="activity active"></span>

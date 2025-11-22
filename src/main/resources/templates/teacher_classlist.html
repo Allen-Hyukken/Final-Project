@@ -5,38 +5,194 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-
     <meta name="theme-name" content="quixlab" />
 
     <title th:text="'Teacher Dashboard - ' + ${classRoom.name} + ' Quizzes'">Teacher Dashboard - Quiz List</title>
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon.png}">
-
     <link th:href="@{/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
     <link th:href="@{/plugins/chartist/css/chartist.min.css}" rel="stylesheet">
     <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <style>
+        body {
+            position: relative;
+            background-color: #182848;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -2;
+            filter: brightness(0.55);
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            z-index: -1;
+        }
+
+        .content-body {
+            position: relative;
+            z-index: 10;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 16px !important;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(127, 127, 255, 0.3) !important;
+        }
+
+        h3, h4, h5, .text-muted, .card-title, strong, .breadcrumb-item, .breadcrumb-item a {
+            color: white !important;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+        }
+
+        .breadcrumb {
+            background-color: transparent !important;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%) !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7f7fff 0%, #5555ff 100%) !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(127, 127, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(127, 127, 255, 0.6);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%) !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.6);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f44336 0%, #c62828 100%) !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.6);
+        }
+
+        .card.border {
+            background: rgba(255, 255, 255, 0.12) !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            transition: all 0.3s ease;
+        }
+
+        .card.border:hover {
+            background: rgba(255, 255, 255, 0.18) !important;
+            box-shadow: 0 8px 25px rgba(127, 127, 255, 0.3) !important;
+        }
+
+        .table {
+            color: white !important;
+        }
+
+        .table-responsive {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .table-bordered {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .table-bordered td,
+        .table-bordered th {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .thead-dark th {
+            background: rgba(0, 0, 0, 0.3) !important;
+            color: white !important;
+            border-color: rgba(255, 255, 255, 0.2) !important;
+        }
+
+        .card-body p, .card-body strong {
+            color: white !important;
+        }
+
+        small.text-muted {
+            color: rgba(255, 255, 255, 0.85) !important;
+        }
+
+        .empty-state {
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+    </style>
 </head>
 
 <body>
 
-<!--**********************************
-    Main Wrapper Start
-***********************************-->
 <div id="main-wrapper">
-
-    <!-- Nav Header -->
     <div th:replace="fragments/navheader-teacher :: navheader-teacher"></div>
-
-
-    <!-- Header Fragment -->
     <div th:replace="fragments/header :: header"></div>
 
-    <!--**********************************
-        Content Body Start
-    ***********************************-->
     <div class="content-body">
-
-        <!-- Breadcrumb -->
         <div class="row mx-0">
             <div class="col p-md-0">
                 <ol class="breadcrumb">
@@ -48,8 +204,6 @@
         </div>
 
         <div class="container-fluid">
-
-            <!-- Quiz Management Section -->
             <div class="row">
                 <div class="col-12">
                     <div class="card shadow-sm">
@@ -61,7 +215,6 @@
 
                             <p class="text-muted">View, edit, or check the results of the quizzes you've created for this class.</p>
 
-                            <!-- Quiz List -->
                             <div class="row" th:if="${!#lists.isEmpty(quizzes)}">
                                 <div class="col-md-6 col-lg-4 mb-3" th:each="q : ${quizzes}">
                                     <div class="card border">
@@ -81,7 +234,6 @@
                                 </div>
                             </div>
 
-                            <!-- Empty Quiz List -->
                             <div class="text-center mt-4" th:if="${#lists.isEmpty(quizzes)}">
                                 <p class="text-muted">No quizzes created yet for this class.</p>
                             </div>
@@ -90,7 +242,6 @@
                 </div>
             </div>
 
-            <!-- Student List Section -->
             <div class="row mt-4">
                 <div class="col-12">
                     <div class="card shadow-sm">
@@ -117,7 +268,6 @@
                                 </table>
                             </div>
 
-                            <!-- Empty state -->
                             <div class="text-center" th:if="${#lists.isEmpty(students)}">
                                 <p class="text-muted">No students have enrolled in this class yet.</p>
                             </div>
@@ -125,25 +275,17 @@
                     </div>
                 </div>
             </div>
-
-        </div> <!-- /container-fluid -->
+        </div>
     </div>
-    <!--**********************************
-        Content Body End
-    ***********************************-->
 
     <div th:replace="fragments/footer :: footer"></div>
 </div>
 
-<!--**********************************
-    Scripts
-***********************************-->
 <script th:src="@{/plugins/common/common.min.js}"></script>
 <script th:src="@{/js/custom.min.js}"></script>
 <script th:src="@{/js/settings.js}"></script>
 <script th:src="@{/js/gleek.js}"></script>
 <script th:src="@{/js/styleSwitcher.js}"></script>
-
 <script th:src="@{/plugins/chart.js/Chart.bundle.min.js}"></script>
 <script th:src="@{/plugins/circle-progress/circle-progress.min.js}"></script>
 <script th:src="@{/plugins/d3v3/index.js}"></script>

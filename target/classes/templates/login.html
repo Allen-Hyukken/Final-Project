@@ -7,65 +7,296 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Cerebro Metron - Login</title>
 
-    <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" th:href="@{/assets/images/favicon.png}">
-
-    <!-- Custom Stylesheet -->
     <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 1;
+            filter: brightness(0.5);
+            animation: subtleZoom 20s ease-in-out infinite;
+        }
+
+        @keyframes subtleZoom {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 2;
+            background: linear-gradient(135deg, rgba(127, 127, 255, 0.1), rgba(24, 40, 72, 0.3));
+        }
+
+        .login-form-bg {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+        }
+
+        .login-form {
+            position: relative;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            padding: 40px 35px;
+            padding-bottom: 50px;
+            animation: fadeInUp 0.6s ease-out;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-form:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.6),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-inside-box {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo-inside-box img {
+            width: 90px;
+            height: auto;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 20px rgba(127, 127, 255, 0.6));
+            transition: filter 0.3s ease;
+        }
+
+        .logo-inside-box img:hover {
+            filter: drop-shadow(0 0 30px rgba(127, 127, 255, 0.9));
+        }
+
+        .logo-inside-box h3 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(127, 127, 255, 0.8),
+            0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+        }
+
+        h3 {
+            color: #ffffff !important;
+            text-shadow: 0 0 15px rgba(127, 127, 255, 0.6),
+            0 2px 8px rgba(0, 0, 0, 0.4);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .login-input .form-control {
+            background: rgba(255, 255, 255, 0.25) !important;
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 16px 20px;
+            color: #fff;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .login-input .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        .login-input .form-control:focus {
+            background: rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 0 20px rgba(127, 127, 255, 0.6),
+            inset 0 0 10px rgba(255, 255, 255, 0.1);
+            border-color: rgba(127, 127, 255, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .login-form__btn {
+            background: linear-gradient(135deg, #7f7fff 0%, #5555ff 100%);
+            color: #fff;
+            border-radius: 12px;
+            padding: 14px 0;
+            font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 1px;
+            border: none;
+            box-shadow: 0 8px 20px rgba(127, 127, 255, 0.4);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-form__btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .login-form__btn:hover::before {
+            left: 100%;
+        }
+
+        .login-form__btn:hover {
+            background: linear-gradient(135deg, #6464ff 0%, #4444ee 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(127, 127, 255, 0.6);
+        }
+
+        .login-form__btn:active {
+            transform: translateY(-1px);
+        }
+
+        .login-form__footer {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
+        }
+
+        .login-form__footer a {
+            font-weight: bold;
+            color: #7f7fff;
+            text-shadow: 0 0 10px rgba(127, 127, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .login-form__footer a:hover {
+            color: #9f9fff;
+            text-shadow: 0 0 15px rgba(127, 127, 255, 0.8);
+            text-decoration: none;
+        }
+
+        .text-success, .text-danger {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 10px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding-top: 20px !important;
+        }
+
+        /* Floating particles effect */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @media (max-width: 768px) {
+            .login-form {
+                padding: 30px 25px;
+                padding-bottom: 40px;
+            }
+
+            .logo-inside-box h3 {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-form {
+                padding: 25px 20px;
+                padding-bottom: 35px;
+            }
+        }
+    </style>
 </head>
 
 <body class="h-100">
 
 <div class="login-form-bg h-100">
     <div class="container h-100">
-        <div class="row justify-content-center h-100">
-            <div class="col-xl-6">
+        <div class="row justify-content-center align-items-center h-100">
+            <div class="col-xl-6 col-lg-8 col-md-10">
                 <div class="form-input-content">
                     <div class="card login-form mb-0">
-                        <div class="card-body pt-5">
+                        <div class="card-body">
+                            <div class="logo-inside-box">
+                                <img th:src="@{/images/logo.png}" alt="Cerebro Metron Logo">
+                                <h3>Cerebro Metron</h3>
+                            </div>
 
-                            <!-- App Name -->
                             <a class="text-center" th:href="@{/}">
                                 <h3>LOGIN</h3>
                             </a>
 
-                            <!-- Login Form -->
-                            <form th:action="@{/login}" method="post" class="mt-5 mb-5 login-input">
-                                <!-- CSRF Token - REQUIRED for Spring Security -->
+                            <form th:action="@{/login}" method="post" class="mt-4 mb-4 login-input">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-                                <!-- Email -->
                                 <div class="form-group">
-                                    <!-- Spring Security expects "username" field name -->
                                     <input type="text" name="username" class="form-control" placeholder="Email" required>
                                 </div>
 
-                                <!-- Password -->
                                 <div class="form-group">
                                     <input type="password" name="password" class="form-control" placeholder="Password" required>
                                 </div>
 
-                                <!-- Login Button -->
-                                <button type="submit" class="btn login-form__btn submit w-100">Sign In</button>
+                                <button type="submit" class="btn login-form__btn submit w-100 mt-4">
+                                    Sign In
+                                </button>
 
-                                <!-- Success Message -->
                                 <div th:if="${param.success}" class="text-success text-center mt-3">
-                                    Registration successful! Please login.
+                                    ✓ Registration successful! Please login.
                                 </div>
 
-                                <!-- Error Message -->
                                 <div th:if="${param.error}" class="text-danger text-center mt-3">
-                                    Invalid email or password.
+                                    ✗ Invalid email or password.
                                 </div>
 
-                                <!-- Logout Message -->
                                 <div th:if="${param.logout}" class="text-success text-center mt-3">
-                                    You have been logged out successfully.
+                                    ✓ You have been logged out successfully.
                                 </div>
                             </form>
 
-                            <!-- Footer -->
-                            <p class="mt-5 login-form__footer">
+                            <p class="mt-4 login-form__footer">
                                 Don't have an account?
                                 <a th:href="@{/register}" class="text-primary">Sign Up</a> now
                             </p>
@@ -77,9 +308,6 @@
     </div>
 </div>
 
-<!--**********************************
-    Scripts
-***********************************-->
 <script th:src="@{/plugins/common/common.min.js}"></script>
 <script th:src="@{/js/custom.min.js}"></script>
 <script th:src="@{/js/settings.js}"></script>
