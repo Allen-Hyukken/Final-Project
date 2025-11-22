@@ -4,17 +4,16 @@ import com.cerebro.finalproject.model.Classroom;
 import com.cerebro.finalproject.model.User;
 import com.cerebro.finalproject.repository.ClassroomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 
 @Service
 public class ClassroomService {
@@ -22,7 +21,7 @@ public class ClassroomService {
     @Autowired
     private ClassroomRepository classroomRepository;
 
-    private static final String UPLOAD_DIR = "uploads/banners/";
+    private static final String DEFAULT_BANNER_PATH = "static/images/default-class.jpg";
 
     public Classroom createClass(String name, User teacher, MultipartFile banner) {
         Classroom classroom = new Classroom();
@@ -33,23 +32,36 @@ public class ClassroomService {
         // Handle banner upload
         if (banner != null && !banner.isEmpty()) {
             try {
-                String fileName = UUID.randomUUID().toString() + "_" + banner.getOriginalFilename();
-                Path uploadPath = Paths.get(UPLOAD_DIR);
-
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
-
-                Path filePath = uploadPath.resolve(fileName);
-                Files.copy(banner.getInputStream(), filePath);
-
-                classroom.setBannerPath("/uploads/banners/" + fileName);
+                classroom.setBannerImage(banner.getBytes());
+                classroom.setBannerContentType(banner.getContentType());
             } catch (IOException e) {
                 e.printStackTrace();
+                // If upload fails, set default banner
+                setDefaultBanner(classroom);
             }
+        } else {
+            // No banner uploaded, set default
+            setDefaultBanner(classroom);
         }
 
         return classroomRepository.save(classroom);
+    }
+
+    /**
+     * Sets the default banner image from resources
+     */
+    private void setDefaultBanner(Classroom classroom) {
+        try {
+            ClassPathResource defaultBanner = new ClassPathResource(DEFAULT_BANNER_PATH);
+            InputStream inputStream = defaultBanner.getInputStream();
+            byte[] defaultImageBytes = StreamUtils.copyToByteArray(inputStream);
+
+            classroom.setBannerImage(defaultImageBytes);
+            classroom.setBannerContentType("image/jpeg");
+        } catch (IOException e) {
+            e.printStackTrace();
+            // If even default fails, leave null (will be handled in view)
+        }
     }
 
     public Optional<Classroom> findById(Long id) {

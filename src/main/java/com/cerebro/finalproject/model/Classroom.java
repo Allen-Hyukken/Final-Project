@@ -21,6 +21,14 @@ public class Classroom {
     @Column(name = "banner_path")
     private String bannerPath;
 
+    // NEW: Store banner image in database
+    @Lob
+    @Column(name = "banner_image", columnDefinition = "LONGBLOB")
+    private byte[] bannerImage;
+
+    @Column(name = "banner_content_type", length = 50)
+    private String bannerContentType;
+
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private User teacher;
@@ -76,6 +84,23 @@ public class Classroom {
 
     public void setBannerPath(String bannerPath) {
         this.bannerPath = bannerPath;
+    }
+
+    // NEW Getters and Setters
+    public byte[] getBannerImage() {
+        return bannerImage;
+    }
+
+    public void setBannerImage(byte[] bannerImage) {
+        this.bannerImage = bannerImage;
+    }
+
+    public String getBannerContentType() {
+        return bannerContentType;
+    }
+
+    public void setBannerContentType(String bannerContentType) {
+        this.bannerContentType = bannerContentType;
     }
 
     public User getTeacher() {

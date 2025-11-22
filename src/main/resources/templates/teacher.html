@@ -17,20 +17,48 @@
     <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
 
     <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <style>
+        .class-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .class-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .class-banner {
+            height: 150px;
+            width: 100%;
+            object-fit: cover;
+        }
+
+        .class-code {
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+        }
+
+        .copy-code {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .copy-code:hover {
+            color: #007bff !important;
+        }
+    </style>
 </head>
 <body>
 
 <div id="main-wrapper">
 
-    <div class="nav-header">
-        <div class="brand-logo">
-            <a th:href="@{/teacher}">
-                <b class="logo-abbr"><img th:src="@{/images/logo.png}" alt=""></b>
-                <span class="logo-compact"><img th:src="@{/images/logo-compact.png}" alt=""></span>
-                <span class="brand-title"><img th:src="@{/images/logo-text.png}" alt=""></span>
-            </a>
-        </div>
-    </div>
+    <div th:replace="fragments/navheader-teacher :: navheader-teacher"></div>
+
     <div th:replace="fragments/header :: header"></div>
 
     <div class="content-body">
@@ -59,9 +87,10 @@
                             </div>
 
                             <div class="custom-file mb-3">
-                                <input type="file" class="custom-file-input" id="classPic" name="banner">
-                                <label class="custom-file-label" for="classPic">Upload Class Banner</label>
+                                <input type="file" class="custom-file-input" id="classPic" name="banner" accept="image/*">
+                                <label class="custom-file-label" for="classPic">Upload Class Banner (Optional)</label>
                             </div>
+                            <small class="form-text text-muted mb-3">Recommended size: 1200x400px. Max 5MB.</small>
 
                             <div class="text-right">
                                 <button type="submit" class="btn btn-success btn-rounded px-4">Create Class</button>
@@ -79,37 +108,36 @@
 
                     <div class="row" th:if="${!#lists.isEmpty(classes)}">
                         <div class="col-md-6 col-lg-3 mb-4" th:each="c : ${classes}">
-                            <a th:href="@{|/teacher/class/${c.id}|}">
-                                <div class="card shadow-sm">
-                                    <img class="img-fluid" th:if="${c.bannerPath != null}" th:src="@{${c.bannerPath}}" alt="Class Banner" />
-                                    <img class="img-fluid" th:unless="${c.bannerPath != null}" th:src="@{/images/default-class.jpg}" alt="Class Banner" />
+                            <div class="card shadow-sm class-card" th:onclick="|window.location.href='/teacher/class/' + ${c.id}|">
+                                <!-- Class Banner -->
+                                <img class="class-banner"
+                                     th:src="@{|/classroom/${c.id}/banner|}"
+                                     alt="Class Banner" />
 
-                                    <div class="card-body">
-                                        <h5 class="card-title" th:text="${c.name}">Class Name</h5>
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${c.name}">Class Name</h5>
 
-                                        <p class="card-text mb-0">
-                                            Code:
-                                            <span th:id="'classCode_' + ${c.id}"
-                                                  th:text="${c.code}"
-                                                  th:onclick="|event.stopPropagation(); copyClassCode('classCode_' + ${c.id}, 'copyFeedback_' + ${c.id})|"
-                                                  class="text-primary font-weight-bold"
-                                                  style="cursor: pointer;"
-                                                  title="Click to copy code">
+                                    <p class="mb-0">
+                                        <strong>Code:</strong>
+                                        <span th:id="'classCode_' + ${c.id}"
+                                              th:text="${c.code}"
+                                              th:onclick="|event.stopPropagation(); copyClassCode('classCode_' + ${c.id}, 'copyFeedback_' + ${c.id})|"
+                                              class="text-primary class-code copy-code"
+                                              title="Click to copy code">
                                         </span>
-                                            <small th:id="'copyFeedback_' + ${c.id}" class="text-success ml-2" style="display: none;">Copied!</small>
-                                        </p>
-                                    </div>
-
-                                    <div class="card-footer">
-                                        <small class="text-muted">Created by: <span th:text="${c.teacher.name}"></span></small>
-                                    </div>
+                                        <small th:id="'copyFeedback_' + ${c.id}" class="text-success ml-2" style="display: none;">Copied!</small>
+                                    </p>
                                 </div>
-                            </a>
+
+                                <div class="card-footer">
+                                    <small class="text-muted">Created by: <span th:text="${c.teacher.name}"></span></small>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
                     <div th:if="${#lists.isEmpty(classes)}" class="text-center mt-4">
-                        <p class="text-muted">You haven’t created any classes yet. Use the form above to create one.</p>
+                        <p class="text-muted">You haven't created any classes yet. Use the form above to create one.</p>
                     </div>
 
                 </div>
@@ -180,11 +208,8 @@
             selection.removeAllRanges();
 
             if (feedbackElement) {
-                feedbackElement.textContent = 'Copied (Fallback)!';
+                feedbackElement.textContent = 'Copied!';
                 showFeedback(feedbackElement);
-                setTimeout(() => {
-                    feedbackElement.textContent = 'Copied!'; // Reset text
-                }, 2000);
             }
         } catch (fallbackErr) {
             console.error('Fallback copy failed: ', fallbackErr);
@@ -203,6 +228,13 @@
             }, 2000);
         }
     }
+
+    // Update custom file input label with selected filename
+    document.getElementById('classPic').addEventListener('change', function(e) {
+        var fileName = e.target.files[0] ? e.target.files[0].name : 'Upload Class Banner (Optional)';
+        var label = e.target.nextElementSibling;
+        label.innerText = fileName;
+    });
 </script>
 
 </body>

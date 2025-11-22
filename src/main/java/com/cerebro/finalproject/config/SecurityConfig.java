@@ -42,7 +42,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/register", "/css/**", "/js/**", "/images/**",
                                 "/plugins/**", "/assets/**", "/uploads/**",
-                                "/static/**", "/webjars/**", "/favicon.ico").permitAll()
+                                "/static/**", "/webjars/**", "/favicon.ico",
+                                "/classroom/*/banner").permitAll()  // ADD THIS LINE
                         .requestMatchers("/teacher/**").hasRole("TEACHER")
                         .requestMatchers("/student/**").hasRole("STUDENT")
                         .anyRequest().authenticated()

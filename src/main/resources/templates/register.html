@@ -17,6 +17,23 @@
 
     <!-- Custom Stylesheet -->
     <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <style>
+        .password-requirements {
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        .requirement {
+            color: #dc3545;
+        }
+        .requirement.valid {
+            color: #28a745;
+        }
+        .requirement i {
+            font-size: 0.75rem;
+            margin-right: 5px;
+        }
+    </style>
 </head>
 
 <body class="h-100">
@@ -34,26 +51,45 @@
                                 <h3>REGISTER</h3>
                             </a>
 
-                            <!-- 🧾 Registration Form -->
-                            <form th:action="@{/register}" th:object="${user}" method="post" class="mt-5 mb-5 login-input">
+                            <!-- Registration Form -->
+                            <form th:action="@{/register}" th:object="${user}" method="post"
+                                  class="mt-5 mb-5 login-input" id="registrationForm">
 
                                 <!-- Name -->
                                 <div class="form-group">
-                                    <input type="text" th:field="*{name}" class="form-control" placeholder="Full Name" required>
+                                    <input type="text" th:field="*{name}" class="form-control"
+                                           placeholder="Full Name" required>
                                 </div>
 
                                 <!-- Email -->
                                 <div class="form-group">
-                                    <input type="email" th:field="*{email}" class="form-control" placeholder="Email Address" required>
+                                    <input type="email" th:field="*{email}" class="form-control"
+                                           placeholder="Email Address" required>
                                 </div>
 
                                 <!-- Password -->
                                 <div class="form-group">
-                                    <input type="password" th:field="*{password}" class="form-control" placeholder="Password" required>
+                                    <input type="password" th:field="*{password}" class="form-control"
+                                           id="password" placeholder="Password"
+                                           minlength="6" required>
+                                    <div class="password-requirements">
+                                        <small id="lengthRequirement" class="requirement">
+                                            <i class="fa fa-times-circle"></i> At least 6 characters
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- Confirm Password -->
+                                <div class="form-group">
+                                    <input type="password" class="form-control"
+                                           id="confirmPassword" placeholder="Confirm Password"
+                                           minlength="6" required>
+                                    <small id="passwordMatch" class="requirement" style="display: none;">
+                                        <i class="fa fa-times-circle"></i> Passwords do not match
+                                    </small>
                                 </div>
 
                                 <!-- Role Selection -->
-                                <!-- NEW - CORRECT -->
                                 <div class="form-group text-center">
                                     <label class="radio-inline mr-3">
                                         <input type="radio" name="role" value="TEACHER" required> Teacher
@@ -64,14 +100,16 @@
                                 </div>
 
                                 <!-- Submit Button -->
-                                <button type="submit" class="btn login-form__btn submit w-100">Sign Up</button>
+                                <button type="submit" class="btn login-form__btn submit w-100" id="submitBtn">
+                                    Sign Up
+                                </button>
 
-                                <!-- Optional success/error feedback -->
+                                <!-- Success/Error Messages -->
                                 <div th:if="${param.success}" class="text-success text-center mt-3">
                                     Registration successful! You may now log in.
                                 </div>
                                 <div th:if="${param.error}" class="text-danger text-center mt-3">
-                                    Registration failed. Please try again.
+                                    Registration failed. Email may already be in use or password too short.
                                 </div>
                             </form>
 
@@ -97,6 +135,73 @@
 <script th:src="@{/js/settings.js}"></script>
 <script th:src="@{/js/gleek.js}"></script>
 <script th:src="@{/js/styleSwitcher.js}"></script>
+
+<script>
+    // Password validation
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const lengthRequirement = document.getElementById('lengthRequirement');
+    const passwordMatch = document.getElementById('passwordMatch');
+    const submitBtn = document.getElementById('submitBtn');
+    const form = document.getElementById('registrationForm');
+
+    // Check password length
+    passwordInput.addEventListener('input', function() {
+        const password = this.value;
+
+        // Check length requirement
+        if (password.length >= 6) {
+            lengthRequirement.classList.add('valid');
+            lengthRequirement.innerHTML = '<i class="fa fa-check-circle"></i> At least 6 characters';
+        } else {
+            lengthRequirement.classList.remove('valid');
+            lengthRequirement.innerHTML = '<i class="fa fa-times-circle"></i> At least 6 characters';
+        }
+
+        // Check if passwords match
+        checkPasswordMatch();
+    });
+
+    // Check if passwords match
+    confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+
+    function checkPasswordMatch() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        if (confirmPassword.length > 0) {
+            if (password !== confirmPassword) {
+                passwordMatch.style.display = 'block';
+                passwordMatch.classList.remove('valid');
+                passwordMatch.innerHTML = '<i class="fa fa-times-circle"></i> Passwords do not match';
+            } else {
+                passwordMatch.style.display = 'block';
+                passwordMatch.classList.add('valid');
+                passwordMatch.innerHTML = '<i class="fa fa-check-circle"></i> Passwords match';
+            }
+        } else {
+            passwordMatch.style.display = 'none';
+        }
+    }
+
+    // Form submission validation
+    form.addEventListener('submit', function(e) {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        if (password.length < 6) {
+            e.preventDefault();
+            alert('Password must be at least 6 characters long.');
+            return false;
+        }
+
+        if (password !== confirmPassword) {
+            e.preventDefault();
+            alert('Passwords do not match. Please try again.');
+            return false;
+        }
+    });
+</script>
 
 </body>
 </html>

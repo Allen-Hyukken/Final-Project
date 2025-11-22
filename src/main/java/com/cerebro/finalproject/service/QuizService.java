@@ -53,6 +53,14 @@ public class QuizService {
     }
 
     @Transactional
+    public void recalculateAllQuizTotals() {
+        List<Quiz> allQuizzes = quizRepository.findAll();
+        for (Quiz quiz : allQuizzes) {
+            updateQuizTotalPoints(quiz.getId());
+        }
+    }
+
+    @Transactional
     public void deleteQuiz(Long id) {
         quizRepository.deleteById(id);
     }
@@ -130,21 +138,7 @@ public class QuizService {
      * Updates the total points for a quiz based on sum of all question points
      */
     private void updateQuizTotalPoints(Long quizId) {
-        Optional<Quiz> quizOpt = quizRepository.findById(quizId);
-        if (quizOpt.isPresent()) {
-            Quiz quiz = quizOpt.get();
-            quizRepository.flush();
-
-            Quiz refreshedQuiz = quizRepository.findById(quizId).orElse(quiz);
-
-            // Sum up all question points
-            double totalPoints = refreshedQuiz.getQuestions().stream()
-                    .mapToDouble(q -> q.getPoints() != null ? q.getPoints() : 1.0)
-                    .sum();
-
-            refreshedQuiz.setTotalPoints(totalPoints);
-            quizRepository.save(refreshedQuiz);
-        }
+        quizRepository.updateTotalPoints(quizId);
     }
 
     @Transactional
