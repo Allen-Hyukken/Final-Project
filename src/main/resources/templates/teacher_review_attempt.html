@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-name" content="quixlab" />
+
+    <title th:text="'Review Attempt - ' + ${attempt.student.name}">Review Student Attempt</title>
+
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon.png}">
+    <link th:href="@{/plugins/pg-calendar/css/pignose.calendar.min.css}" rel="stylesheet">
+    <link th:href="@{/plugins/chartist/css/chartist.min.css}" rel="stylesheet">
+    <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+
+    <link th:href="@{/css/teacher-dashboard.css}" rel="stylesheet">
+</head>
+
+<body>
+
+<div id="main-wrapper">
+    <div th:replace="fragments/navheader-teacher :: navheader-teacher"></div>
+    <div th:replace="fragments/header :: header"></div>
+
+    <div class="content-body">
+        <div class="row mx-0">
+            <div class="col p-md-0">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/teacher}">Home</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{|/teacher/class/${quiz.classRoom.id}|}">Classroom</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{|/teacher/quiz/${quiz.id}/results|}">Quiz Results</a></li>
+                    <li class="breadcrumb-item active">Review Attempt</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <!-- Student Info Card -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title mb-3">Student Attempt Review</h3>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <p><strong>Student:</strong> <span th:text="${attempt.student.name}">Student Name</span></p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Quiz:</strong> <span th:text="${quiz.title}">Quiz Title</span></p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Score:</strong>
+                                <span th:text="${attempt.score} + ' / ' + ${quiz.totalPoints}">0/0</span>
+                                (<span th:text="${#numbers.formatDecimal((attempt.score / quiz.totalPoints) * 100, 1, 2)}">0</span>%)
+                            </p>
+                        </div>
+                        <div class="col-md-3">
+                            <p><strong>Submitted:</strong>
+                                <span th:text="${#temporals.format(attempt.submittedAt, 'MMM dd, yyyy HH:mm')}">Date</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success/Error Messages -->
+            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <span th:text="${success}">Success message</span>
+                <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+            </div>
+
+            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <span th:text="${error}">Error message</span>
+                <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+            </div>
+
+            <!-- Answers Review -->
+            <div th:each="answer, iter : ${answers}" class="card answer-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5>
+                            Question <span th:text="${iter.index + 1}">1</span>
+                            <span class="badge badge-info ml-2"
+                                  th:text="${answer.question.points} + ' points'">1 points</span>
+                        </h5>
+                        <span th:if="${answer.question.type.name() != 'ESSAY'}">
+                            <span th:if="${answer.correct}" class="badge badge-success">
+                                <i class="fa fa-check"></i> Correct
+                            </span>
+                            <span th:unless="${answer.correct}" class="badge badge-danger">
+                                <i class="fa fa-times"></i> Incorrect
+                            </span>
+                        </span>
+                        <span th:if="${answer.question.type.name() == 'ESSAY'}">
+                            <span th:if="${answer.essayScore != null}" class="badge badge-success">
+                                <i class="fa fa-check"></i> Graded
+                            </span>
+                            <span th:if="${answer.essayScore == null}" class="badge badge-warning">
+                                <i class="fa fa-clock-o"></i> Needs Grading
+                            </span>
+                        </span>
+                    </div>
+
+                    <p class="mb-3"><strong>Question:</strong> <span th:text="${answer.question.text}">Question text</span></p>
+                    <p class="mb-3"><strong>Type:</strong>
+                        <span class="badge badge-info" th:text="${answer.question.type}">Type</span>
+                    </p>
+
+                    <!-- MCQ Answer -->
+                    <div th:if="${answer.question.type.name() == 'MCQ'}">
+                        <p><strong>Student's Answer:</strong>
+                            <span th:if="${answer.choice != null}" th:text="${answer.choice.text}">Choice</span>
+                            <span th:if="${answer.choice == null}" class="text-muted">No answer provided</span>
+                        </p>
+                        <p><strong>Correct Answer:</strong></p>
+                        <ul>
+                            <li th:each="c : ${answer.question.choices}">
+                                <span th:text="${c.text}">Choice</span>
+                                <span th:if="${c.correct}" class="badge badge-success ml-2">Correct</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- TF/IDENT Answer -->
+                    <div th:if="${answer.question.type.name() == 'TF' or answer.question.type.name() == 'IDENT'}">
+                        <p><strong>Student's Answer:</strong>
+                            <span th:text="${answer.givenText}">Answer</span>
+                        </p>
+                        <p><strong>Correct Answer:</strong>
+                            <span th:text="${answer.question.correctAnswer}">Correct</span>
+                        </p>
+                    </div>
+
+                    <!-- CODING Answer -->
+                    <div th:if="${answer.question.type.name() == 'CODING'}">
+                        <p><strong>Student's Code:</strong></p>
+                        <div class="essay-answer" style="font-family: 'Courier New', monospace;">
+                            <span th:text="${answer.givenText}">Code here</span>
+                        </div>
+                        <p class="mt-3"><strong>Expected Solution:</strong></p>
+                        <div class="essay-answer" style="font-family: 'Courier New', monospace;">
+                            <span th:text="${answer.question.correctAnswer}">Expected code</span>
+                        </div>
+                    </div>
+
+                    <!-- ESSAY Answer with Grading -->
+                    <div th:if="${answer.question.type.name() == 'ESSAY'}">
+                        <p><strong>Student's Essay:</strong></p>
+                        <div class="essay-answer">
+                            <span th:text="${answer.actualEssayText}">Essay answer here</span>
+                        </div>
+
+                        <!-- Grading Section -->
+                        <div class="grading-section" th:if="${answer.essayScore == null}">
+                            <h6 class="mb-3">
+                                <i class="fa fa-star"></i> Grade This Essay
+                            </h6>
+                            <form th:action="@{|/teacher/answer/${answer.id}/grade|}" method="post" class="form-inline">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <input type="hidden" name="attemptId" th:value="${attempt.id}" />
+
+                                <div class="form-group mr-3">
+                                    <label class="mr-2">Score:</label>
+                                    <input type="number"
+                                           class="form-control"
+                                           name="score"
+                                           th:max="${answer.question.points}"
+                                           min="0"
+                                           step="0.5"
+                                           placeholder="0.0"
+                                           required
+                                           style="width: 100px;">
+                                    <span class="ml-2">/ <span th:text="${answer.question.points}">5</span> points</span>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa fa-save"></i> Submit Grade
+                                </button>
+                            </form>
+                            <small class="text-muted d-block mt-2">
+                                Enter a score between 0 and <span th:text="${answer.question.points}">5</span> points based on the quality of the essay.
+                            </small>
+                        </div>
+
+                        <!-- Already Graded -->
+                        <div th:if="${answer.essayScore != null}">
+                            <div class="alert alert-success mt-3">
+                                <i class="fa fa-check-circle"></i> This essay has been graded with
+                                <strong><span th:text="${answer.essayScore}">0</span> / <span th:text="${answer.question.points}">5</span> points</strong>.
+                            </div>
+
+                            <!-- Regrade Form -->
+                            <div class="grading-section">
+                                <h6 class="mb-3">
+                                    <i class="fa fa-edit"></i> Regrade This Essay
+                                </h6>
+                                <form th:action="@{|/teacher/answer/${answer.id}/grade|}" method="post" class="form-inline">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                    <input type="hidden" name="attemptId" th:value="${attempt.id}" />
+
+                                    <div class="form-group mr-3">
+                                        <label class="mr-2">New Score:</label>
+                                        <input type="number"
+                                               class="form-control"
+                                               name="score"
+                                               th:max="${answer.question.points}"
+                                               th:value="${answer.essayScore}"
+                                               min="0"
+                                               step="0.5"
+                                               required
+                                               style="width: 100px;">
+                                        <span class="ml-2">/ <span th:text="${answer.question.points}">5</span> points</span>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-refresh"></i> Update Grade
+                                    </button>
+                                </form>
+                                <small class="text-muted d-block mt-2">
+                                    Change the score if you need to adjust the grade.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr th:if="${!iter.last}">
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="text-center mt-4 mb-5">
+                <a th:href="@{|/teacher/quiz/${quiz.id}/results|}" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"></i> Back to Quiz Results
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments/footer :: footer"></div>
+</div>
+
+<script th:src="@{/plugins/common/common.min.js}"></script>
+<script th:src="@{/js/custom.min.js}"></script>
+<script th:src="@{/js/settings.js}"></script>
+<script th:src="@{/js/gleek.js}"></script>
+<script th:src="@{/js/styleSwitcher.js}"></script>
+
+</body>
+</html>

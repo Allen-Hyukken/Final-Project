@@ -1,6 +1,7 @@
 package com.cerebro.finalproject.controller;
 
 import com.cerebro.finalproject.model.*;
+import com.cerebro.finalproject.repository.AnswerRepository;
 import com.cerebro.finalproject.repository.UserRepository;
 import com.cerebro.finalproject.security.CustomUserDetails;
 import com.cerebro.finalproject.service.ClassroomService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +30,9 @@ public class TeacherController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AnswerRepository answerRepository;
+
     @GetMapping
     public String teacherDashboard(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
         User teacher = userRepository.findByIdWithTeacherClasses(userDetails.getUser().getId())
@@ -43,7 +48,6 @@ public class TeacherController {
                               @AuthenticationPrincipal CustomUserDetails userDetails) {
         User teacher = userRepository.findById(userDetails.getUser().getId()).orElse(null);
         if (teacher != null) {
-            // Pass banner to service - it will handle default if banner is null/empty
             classroomService.createClass(name, teacher, banner);
         }
         return "redirect:/teacher";
@@ -117,7 +121,6 @@ public class TeacherController {
         Quiz quiz = quizOpt.get();
         Question.QuestionType type = Question.QuestionType.valueOf(typeStr);
 
-        // Default points to 1.0 if not provided
         Double questionPoints = (points != null && points > 0) ? points : 1.0;
 
         if (type == Question.QuestionType.MCQ) {
@@ -191,7 +194,6 @@ public class TeacherController {
         model.addAttribute("attempts", attempts);
         model.addAttribute("averageScore", averageScore);
 
-        // Calculate statistics if there are attempts
         if (!attempts.isEmpty() && quiz.getTotalPoints() != null && quiz.getTotalPoints() > 0) {
             double totalPoints = quiz.getTotalPoints();
 
@@ -245,5 +247,40 @@ public class TeacherController {
         }
 
         return "teacher_insidequiz_result";
+    }
+
+    // NEW: View detailed attempt with essay grading
+    @GetMapping("/attempt/{attemptId}/review")
+    public String reviewAttempt(@PathVariable Long attemptId, Model model, RedirectAttributes redirectAttributes) {
+        Optional<Attempt> attemptOpt = quizService.getAttemptById(attemptId);
+        if (attemptOpt.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Attempt not found");
+            return "redirect:/teacher";
+        }
+
+        Attempt attempt = attemptOpt.get();
+        List<Answer> answers = answerRepository.findByAttemptId(attemptId);
+
+        model.addAttribute("attempt", attempt);
+        model.addAttribute("answers", answers);
+        model.addAttribute("quiz", attempt.getQuiz());
+
+        return "teacher_review_attempt";
+    }
+
+    // NEW: Grade essay answer
+    @PostMapping("/answer/{answerId}/grade")
+    public String gradeEssayAnswer(@PathVariable Long answerId,
+                                   @RequestParam("score") Double score,
+                                   @RequestParam("attemptId") Long attemptId,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            quizService.gradeEssayAnswer(answerId, score);
+            redirectAttributes.addFlashAttribute("success", "Answer graded successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to grade answer: " + e.getMessage());
+        }
+
+        return "redirect:/teacher/attempt/" + attemptId + "/review";
     }
 }

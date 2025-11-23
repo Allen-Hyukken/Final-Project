@@ -9551,9 +9551,9 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
   .login-input .form-group .form-control {
     background: transparent;
     border: 0;
-    border-radius: 0;
+
     border-bottom: 1px solid #f5f5f5;
-    padding-left: 0;
+
     color: #7A88A1; }
 
 .form-control:focus {

@@ -47,4 +47,40 @@ public class Answer {
 
     public Boolean getCorrect() { return correct; }
     public void setCorrect(Boolean correct) { this.correct = correct; }
+
+    // Helper method to extract essay score from givenText
+    // Format: "ESSAY_SCORE:5.0|||<actual essay text>"
+    public Double getEssayScore() {
+        if (givenText != null && givenText.startsWith("ESSAY_SCORE:")) {
+            try {
+                int endIndex = givenText.indexOf("|||");
+                if (endIndex > 0) {
+                    String scoreStr = givenText.substring(12, endIndex);
+                    return Double.parseDouble(scoreStr);
+                }
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    // Helper method to get actual essay text without score prefix
+    public String getActualEssayText() {
+        if (givenText != null && givenText.startsWith("ESSAY_SCORE:")) {
+            int startIndex = givenText.indexOf("|||");
+            if (startIndex > 0 && startIndex + 3 < givenText.length()) {
+                return givenText.substring(startIndex + 3);
+            }
+        }
+        return givenText;
+    }
+
+    // Helper method to set essay score (stores in givenText with special format)
+    public void setEssayScore(Double score, String essayText) {
+        if (score != null) {
+            this.givenText = "ESSAY_SCORE:" + score + "|||" + (essayText != null ? essayText : "");
+            this.correct = true; // Mark as graded
+        }
+    }
 }
