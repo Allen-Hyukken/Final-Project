@@ -18,7 +18,6 @@
         body {
             position: relative;
             background-color: #182848;
-            min-height: 100vh;
         }
 
         body::before {
@@ -48,24 +47,14 @@
             z-index: -1;
         }
 
-        .content-body {
-            position: relative;
-            z-index: 10;
-        }
-
         .card {
             background: rgba(255, 255, 255, 0.15) !important;
-            backdrop-filter: blur(20px) !important;
-            -webkit-backdrop-filter: blur(20px) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
             border: 1px solid rgba(255, 255, 255, 0.3) !important;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
             border-radius: 16px !important;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            transition: all 0.3s ease !important;
         }
 
         .card:hover {
@@ -73,13 +62,18 @@
             box-shadow: 0 12px 40px rgba(127, 127, 255, 0.3) !important;
         }
 
-        h3, h4, h5, .text-muted, .card-title, strong, .breadcrumb-item, .breadcrumb-item a {
+        h3, h4, h5, .text-muted, strong, .card-title {
             color: white !important;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         .breadcrumb {
             background-color: transparent !important;
+        }
+
+        .breadcrumb-item, .breadcrumb-item a, .breadcrumb-item.active {
+            color: white !important;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
         }
 
         .btn-success {
@@ -87,7 +81,6 @@
             border: none !important;
             box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
             transition: all 0.3s ease;
-            font-weight: 600;
         }
 
         .btn-success:hover {
@@ -96,27 +89,27 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #7f7fff 0%, #5555ff 100%) !important;
+            background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%) !important;
             border: none !important;
-            box-shadow: 0 4px 15px rgba(127, 127, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
             transition: all 0.3s ease;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(127, 127, 255, 0.6);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
         }
 
         .btn-info {
-            background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%) !important;
+            background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%) !important;
             border: none !important;
-            box-shadow: 0 4px 15px rgba(23, 162, 184, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 188, 212, 0.4);
             transition: all 0.3s ease;
         }
 
         .btn-info:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(23, 162, 184, 0.6);
+            box-shadow: 0 6px 20px rgba(0, 188, 212, 0.6);
         }
 
         .btn-danger {
@@ -131,57 +124,102 @@
             box-shadow: 0 6px 20px rgba(244, 67, 54, 0.6);
         }
 
-        .card.border {
-            background: rgba(255, 255, 255, 0.12) !important;
-            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            color: white !important;
+            backdrop-filter: blur(10px);
             transition: all 0.3s ease;
         }
 
-        .card.border:hover {
-            background: rgba(255, 255, 255, 0.18) !important;
-            box-shadow: 0 8px 25px rgba(127, 127, 255, 0.3) !important;
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3) !important;
+            transform: translateY(-2px);
+        }
+
+        .quiz-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.12) !important;
+        }
+
+        .quiz-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 45px rgba(127, 127, 255, 0.4) !important;
+        }
+
+        .quiz-card .card-body {
+            color: white !important;
+        }
+
+        .quiz-card .card-body h5,
+        .quiz-card .card-body p,
+        .quiz-card .card-body strong {
+            color: white !important;
         }
 
         .table {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table thead {
+            background: rgba(127, 127, 255, 0.3) !important;
+        }
+
+        .table thead th {
             color: white !important;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            border: none !important;
+            padding: 1rem;
+        }
+
+        .table tbody tr {
+            background: rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(127, 127, 255, 0.2);
+            transform: scale(1.01);
+        }
+
+        .table tbody td {
+            color: white !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            padding: 1rem;
         }
 
         .table-responsive {
-            background: rgba(255, 255, 255, 0.08);
             border-radius: 12px;
-            padding: 15px;
-            backdrop-filter: blur(10px);
-        }
-
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        .table-bordered {
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .table-bordered td,
-        .table-bordered th {
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .thead-dark th {
-            background: rgba(0, 0, 0, 0.3) !important;
-            color: white !important;
-            border-color: rgba(255, 255, 255, 0.2) !important;
-        }
-
-        .card-body p, .card-body strong {
-            color: white !important;
+            overflow: hidden;
         }
 
         small.text-muted {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        p.text-muted {
             color: rgba(255, 255, 255, 0.85) !important;
         }
 
         .empty-state {
-            color: rgba(255, 255, 255, 0.9) !important;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: rgba(255, 255, 255, 0.3) !important;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
         }
     </style>
 </head>
@@ -210,31 +248,40 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h4 class="card-title mb-0" th:text="'Quizzes for ' + ${classRoom.name}">Quizzes</h4>
-                                <a th:href="@{|/teacher/class/${classRoom.id}/create_quiz|}" class="btn btn-success btn-rounded">Create New Quiz</a>
+                                <a th:href="@{|/teacher/class/${classRoom.id}/create_quiz|}" class="btn btn-success btn-rounded">
+                                    <i class="fa fa-plus"></i> Create New Quiz
+                                </a>
                             </div>
 
                             <p class="text-muted">View, edit, or check the results of the quizzes you've created for this class.</p>
 
                             <div class="row" th:if="${!#lists.isEmpty(quizzes)}">
-                                <div class="col-md-6 col-lg-4 mb-3" th:each="q : ${quizzes}">
-                                    <div class="card border">
+                                <div class="col-md-6 col-lg-4 mb-4" th:each="q : ${quizzes}">
+                                    <div class="card border quiz-card">
                                         <div class="card-body">
                                             <h5 class="card-title" th:text="${q.title}">Quiz Title</h5>
                                             <p class="mb-1"><strong>Date Created:</strong> <span th:text="${#temporals.format(q.createdAt, 'MMM dd, yyyy')}">N/A</span></p>
-                                            <p class="mb-2"><strong>Total Questions:</strong> <span th:text="${#lists.size(q.questions)}">0</span></p>
+                                            <p class="mb-3"><strong>Total Questions:</strong> <span th:text="${#lists.size(q.questions)}">0</span></p>
 
-                                            <div class="mt-3">
-                                                <a th:href="@{|/teacher/quiz/${q.id}/edit|}" class="btn btn-sm btn-primary">Edit</a>
-                                                <a th:href="@{|/teacher/quiz/${q.id}/results|}" class="btn btn-sm btn-info">Results</a>
+                                            <div class="mt-3 d-flex flex-wrap gap-2">
+                                                <a th:href="@{|/teacher/quiz/${q.id}/edit|}" class="btn btn-sm btn-primary">
+                                                    <i class="fa fa-edit"></i> Edit
+                                                </a>
+                                                <a th:href="@{|/teacher/quiz/${q.id}/results|}" class="btn btn-sm btn-info">
+                                                    <i class="fa fa-chart-bar"></i> Results
+                                                </a>
                                                 <a th:href="@{|/teacher/quiz/${q.id}/delete|}" class="btn btn-sm btn-danger"
-                                                   onclick="return confirm('Are you sure you want to delete this quiz?');">Delete</a>
+                                                   onclick="return confirm('Are you sure you want to delete this quiz?');">
+                                                    <i class="fa fa-trash"></i> Delete
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="text-center mt-4" th:if="${#lists.isEmpty(quizzes)}">
+                            <div class="empty-state" th:if="${#lists.isEmpty(quizzes)}">
+                                <i class="fa fa-clipboard-list"></i>
                                 <p class="text-muted">No quizzes created yet for this class.</p>
                             </div>
                         </div>
@@ -246,12 +293,14 @@
                 <div class="col-12">
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <h4 class="card-title">Class Participants</h4>
+                            <h4 class="card-title mb-3">
+                                <i class="fa fa-users"></i> Class Participants
+                            </h4>
                             <p class="text-muted">List of students currently enrolled in this class.</p>
 
                             <div class="table-responsive" th:if="${!#lists.isEmpty(students)}">
-                                <table class="table table-striped table-bordered">
-                                    <thead class="thead-dark">
+                                <table class="table table-striped">
+                                    <thead>
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
@@ -268,7 +317,8 @@
                                 </table>
                             </div>
 
-                            <div class="text-center" th:if="${#lists.isEmpty(students)}">
+                            <div class="empty-state" th:if="${#lists.isEmpty(students)}">
+                                <i class="fa fa-user-plus"></i>
                                 <p class="text-muted">No students have enrolled in this class yet.</p>
                             </div>
                         </div>

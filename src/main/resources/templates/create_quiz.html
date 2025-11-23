@@ -18,7 +18,6 @@
         body {
             position: relative;
             background-color: #182848;
-            min-height: 100vh;
         }
 
         body::before {
@@ -48,103 +47,84 @@
             z-index: -1;
         }
 
-        .content-body {
-            position: relative;
-            z-index: 10;
-        }
-
         .card {
             background: rgba(255, 255, 255, 0.15) !important;
-            backdrop-filter: blur(20px) !important;
-            -webkit-backdrop-filter: blur(20px) !important;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
             border: 1px solid rgba(255, 255, 255, 0.3) !important;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
             border-radius: 16px !important;
-            animation: fadeIn 0.5s ease-out;
+            transition: all 0.3s ease !important;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(127, 127, 255, 0.3) !important;
         }
 
-        h3, h4, h5, .card-title, label, .breadcrumb-item, .breadcrumb-item a {
+        h3, h4, h5, label, .card-title {
             color: white !important;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.25) !important;
+            backdrop-filter: blur(10px);
+            color: #fff !important;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.35) !important;
+            box-shadow: 0 0 20px rgba(127, 127, 255, 0.5);
+            border-color: rgba(127, 127, 255, 0.8);
+            color: #fff !important;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%) !important;
+            border: none !important;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            transition: all 0.3s ease;
+            color: white !important;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(108, 117, 125, 0.3) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            color: white !important;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(108, 117, 125, 0.5) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
         }
 
         .breadcrumb {
             background-color: transparent !important;
         }
 
-        .form-control {
-            background: rgba(255, 255, 255, 0.2) !important;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        .breadcrumb-item, .breadcrumb-item a, .breadcrumb-item.active {
             color: white !important;
-            border-radius: 10px;
-            transition: all 0.3s ease;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
         }
 
-        .form-control:focus {
-            background: rgba(255, 255, 255, 0.25) !important;
-            box-shadow: 0 0 20px rgba(127, 127, 255, 0.5);
-            border-color: rgba(127, 127, 255, 0.8) !important;
-        }
-
-        .form-control::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        textarea.form-control {
-            resize: vertical;
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #4CAF50 0%, #2e7d32 100%) !important;
-            border: none !important;
-            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
-            transition: all 0.3s ease;
-            font-weight: 600;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-success::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn-success:hover::before {
-            left: 100%;
-        }
-
-        .btn-success:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6);
-        }
-
-        .btn-secondary {
-            background: rgba(108, 117, 125, 0.8) !important;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            transition: all 0.3s ease;
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-3px);
-            background: rgba(108, 117, 125, 0.9) !important;
-            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.5);
-        }
-
-        .card-body {
-            color: white !important;
+        .breadcrumb-item a:hover {
+            color: rgba(127, 127, 255, 0.9) !important;
         }
     </style>
 </head>
@@ -166,24 +146,30 @@
         </div>
 
         <div class="container-fluid">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h4 class="card-title mb-3">Create a New Quiz</h4>
-                    <form th:action="@{|/teacher/class/${classRoom.id}/save_quiz|}" method="post">
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        <div class="card-body p-5">
+                            <h4 class="card-title mb-4 text-center">Create a New Quiz</h4>
+                            <form th:action="@{|/teacher/class/${classRoom.id}/save_quiz|}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
 
-                        <div class="form-group">
-                            <label for="title">Quiz Title</label>
-                            <input type="text" class="form-control" id="title" name="title" placeholder="Enter quiz title" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="description">Quiz Description</label>
-                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter quiz instructions or details"></textarea>
-                        </div>
+                                <div class="form-group">
+                                    <label for="title">Quiz Title</label>
+                                    <input type="text" class="form-control" id="title" name="title" placeholder="Enter quiz title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="description">Quiz Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="4" placeholder="Enter quiz instructions or details"></textarea>
+                                </div>
 
-                        <button type="submit" class="btn btn-success">Create Quiz & Add Questions</button>
-                        <a th:href="@{|/teacher/class/${classRoom.id}|}" class="btn btn-secondary">Cancel</a>
-                    </form>
+                                <div class="text-right mt-4">
+                                    <a th:href="@{|/teacher/class/${classRoom.id}|}" class="btn btn-secondary mr-2">Cancel</a>
+                                    <button type="submit" class="btn btn-success px-4">Create Quiz & Add Questions</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

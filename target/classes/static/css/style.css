@@ -229,11 +229,17 @@ figure {
   margin: 0 0 1rem; }
 
 img {
+    vertical-align: middle;
+    border-style: none;
+
+}
+.img-logo {
   vertical-align: middle;
   border-style: none;
   padding-left: 35px;
   padding-top: 5px;
 }
+
 
 svg {
   overflow: hidden;
@@ -3993,7 +3999,7 @@ button.close {
   outline: 0; }
 
 .modal-backdrop {
-  position: fixed;
+
   top: 0;
   right: 0;
   bottom: 0;
