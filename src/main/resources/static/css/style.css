@@ -195,7 +195,7 @@ sup {
   top: -.5em; }
 
 a {
-  color: #7571f9;
+  color: #71f973;
   text-decoration: none;
   background-color: transparent;
   -webkit-text-decoration-skip: objects; }
@@ -230,7 +230,10 @@ figure {
 
 img {
   vertical-align: middle;
-  border-style: none; }
+  border-style: none;
+  padding-left: 35px;
+  padding-top: 5px;
+}
 
 svg {
   overflow: hidden;
@@ -7600,7 +7603,6 @@ sub {
   .nav-header .brand-logo {
     z-index: 999; }
     .nav-header .brand-logo a {
-      padding: 1.607rem 1.8125rem;
       display: block; }
       .nav-header .brand-logo a i {
         font-size: 1.375rem; }
@@ -14010,7 +14012,7 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
   padding-right: 15rem; }
 
 [data-nav-headerbg="color_1"] .nav-header {
-  background-color: #7571f9; }
+  background-color: #a3e3fa; }
 
 [data-nav-headerbg="color_2"] .nav-header {
   background-color: #27394F !important; }
@@ -14034,13 +14036,13 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
   background-color: #0277bd !important; }
 
 [data-nav-headerbg="color_9"] .nav-header {
-  background-color: #00838f !important; }
+  background-color: #a3e3fa !important; }
 
 [data-nav-headerbg="color_10"] .nav-header {
   background-color: #558b2f !important; }
 
 [data-headerbg="color_1"] .header {
-  background-color: #fff; }
+  background-color: #a3e3fa; }
 
 [data-headerbg="color_2"] .header, [data-headerbg="color_2"] .header-left input {
   background-color: #27394F !important;

@@ -13,34 +13,95 @@
     <link th:href="@{/plugins/chartist-plugin-tooltips/css/chartist-plugin-tooltip.css}" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel="stylesheet">
     <style>
-        /* TOP HEADER BAR: Light Gray-White */
         .nav-header {
-            background-color: #e8e8e8 !important; /* Light gray-white background */
+            background: rgba(255, 255, 255, 0.15) !important;
             background-image: none !important;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-            border-bottom: 1px solid #d4d4d4;
+            backdrop-filter: blur(15px) !important;
+            -webkit-backdrop-filter: blur(15px) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            min-height: 65px;
+            display: flex;
+            align-items: center;
+            position: relative;
         }
 
-        /* LOGO/SIDEBAR AREA: White Background para tanggalin ang Violet/Purple */
+        .nav-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(127, 127, 255, 0.1), rgba(24, 40, 72, 0.2));
+            z-index: -1;
+        }
+
         .nav-header .brand-logo {
-            background-color: white !important; /* Solid White ang background ng logo area */
-            /* Maaari ring gamitin ang #e8e8e8 kung gusto mong pareho sa header */
+            background-color: transparent !important;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 15px !important;
+            min-height: 65px;
+        }
+
+        .nav-header .brand-logo a,
+        .nav-header .brand-logo a b,
+        .nav-header .brand-logo a span {
+            background-color: transparent !important;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding: 0 !important;
         }
 
         .nav-header .brand-title {
-            color: #333333 !important; /* Dark gray text para makita sa white background */
-            font-weight: bold;
-            font-size: 1.15rem;
-            text-shadow: none;
+            color: white !important;
+            font-weight: 800;
+            font-size: 1.2rem;
+            text-shadow: 0 0 20px rgba(127, 127, 255, 0.8),
+            0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
         }
 
-        /* Siguraduhin na ang logo images ay madilim para kitang-kita sa puting background */
+        .nav-header .brand-title:hover {
+            text-shadow: 0 0 30px rgba(127, 127, 255, 1),
+            0 2px 15px rgba(0, 0, 0, 0.6);
+        }
+
         .nav-header .logo-abbr img,
         .nav-header .logo-compact img,
         .nav-header .brand-title img {
-            filter: brightness(0.7) contrast(1.2); /* Adjust logo brightness kung needed */
+            filter: brightness(1.5) drop-shadow(0 0 10px rgba(127, 127, 255, 0.6));
+            max-height: 50px !important;
+            max-width: 65px !important;
+            width: auto !important;
+            height: auto !important;
+            vertical-align: middle !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            transition: filter 0.3s ease;
+        }
+
+        .nav-header .logo-abbr img:hover,
+        .nav-header .logo-compact img:hover,
+        .nav-header .brand-title img:hover {
+            filter: brightness(1.8) drop-shadow(0 0 15px rgba(127, 127, 255, 0.9));
+        }
+
+        /* Animated glow effect */
+        @keyframes glow {
+            0%, 100% {
+                filter: brightness(1.5) drop-shadow(0 0 10px rgba(127, 127, 255, 0.6));
+            }
+            50% {
+                filter: brightness(1.7) drop-shadow(0 0 15px rgba(127, 127, 255, 0.8));
+            }
+        }
+
+        .nav-header .brand-logo:hover .logo-abbr img,
+        .nav-header .brand-logo:hover .logo-compact img,
+        .nav-header .brand-logo:hover .brand-title img {
+            animation: glow 2s ease-in-out infinite;
         }
     </style>
 </head>
@@ -50,10 +111,10 @@
         <div class="brand-logo">
             <a th:href="@{/student}">
                 <b class="logo-abbr"><img th:src="@{/images/logo.png}" alt=""></b>
-                <span class="logo-compact"><img th:src="@{/images/logo-compact.png}" alt=""></span>
+                <span class="logo-compact"><img th:src="@{/images/logo.png}" alt=""></span>
                 <span class="brand-title">
-                        <img th:src="@{/images/logo-text.png}" alt="">
-                    </span>
+                    <img th:src="@{/images/logo-text.png}" alt="">
+                </span>
             </a>
         </div>
     </div>

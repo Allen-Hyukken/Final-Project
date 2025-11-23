@@ -43,6 +43,7 @@ public class TeacherController {
                               @AuthenticationPrincipal CustomUserDetails userDetails) {
         User teacher = userRepository.findById(userDetails.getUser().getId()).orElse(null);
         if (teacher != null) {
+            // Pass banner to service - it will handle default if banner is null/empty
             classroomService.createClass(name, teacher, banner);
         }
         return "redirect:/teacher";

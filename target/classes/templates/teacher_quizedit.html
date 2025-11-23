@@ -16,6 +16,130 @@
     <link th:href="@{/css/style.css}" rel="stylesheet">
 
     <style>
+        /* === BACKGROUND AT GLASSMORHISM STYLES (Kagaya ng Login/Dashboard) === */
+        body {
+            position: relative;
+            background-color: #182848;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* Tiyakin na ito ang tamang path ng inyong background image */
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -2;
+            filter: brightness(0.55);
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            z-index: -1;
+        }
+
+        .content-body {
+            position: relative;
+            z-index: 10;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(20px) !important;
+            -webkit-backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 16px !important;
+        }
+
+        /* === TEXT VISIBILITY FIXES === */
+        /* Gawing puti ang lahat ng general text sa loob ng card at content */
+        h3, h4, h5, .card-title, strong, label {
+            color: white !important;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Para sa mga span na nagpapakita ng data */
+        p span, li span, .alert-info span {
+            color: white !important;
+        }
+
+        /* Para sa mas muted na text */
+        .text-muted, .form-text.text-muted {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+
+        /* Para sa form controls (input/textarea/select) */
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            border-color: rgba(255, 255, 255, 0.3) !important;
+            color: white !important; /* Text color sa loob ng input */
+        }
+        .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        /* Para sa alert boxes */
+        .alert-info {
+            background-color: rgba(23, 162, 184, 0.2) !important;
+            border-color: rgba(23, 162, 184, 0.5) !important;
+            color: white !important;
+        }
+
+        /* Breadcrumbs */
+        .breadcrumb {
+            background-color: transparent !important;
+        }
+        .breadcrumb-item a, .breadcrumb-item.active {
+            color: white !important;
+        }
+
+        /* Modal Content - Gawin ding dark glass para maging visible ang content */
+        .modal-content {
+            background: rgba(45, 45, 45, 0.9) !important; /* Darker background para sa modal */
+            backdrop-filter: blur(15px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            color: white !important;
+        }
+        .modal-title, .modal-header .close span {
+            color: white !important;
+            text-shadow: none;
+        }
+        /* Tiyakin na ang dropdown text sa modal ay visible */
+        .modal-body select.form-control option {
+            color: #000; /* Gawing black ang options para makita sa puting dropdown background */
+        }
+
+        /* Tiyakin na ang li text ay white */
+        .card-body ul li {
+            color: white !important;
+        }
+        /* ==================================== */
+
+
+
+        /* ============================================================= */
+
+        /* === FIX: Tanggalin ang Logo Placeholder sa taas ng Breadcrumb === */
+        .content-body .row.mx-0 img {
+            display: none !important;
+        }
+        /* ================================================================= */
+
+        /* Iyong Code Editor/Display Styles */
         .code-display {
             background: #1e1e1e;
             border: 1px solid #333;
@@ -28,14 +152,12 @@
             line-height: 1.5;
             overflow-x: auto;
         }
-
-        /* IDE-style Code Editor */
+        /* ... (Ibang Code Editor Styles) ... */
         .code-editor-container {
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-
         .code-editor-header {
             background: #2d2d2d;
             padding: 10px 15px;
@@ -43,29 +165,24 @@
             align-items: center;
             gap: 8px;
         }
-
         .editor-dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
         }
-
         .dot-red { background: #ff5f56; }
         .dot-yellow { background: #ffbd2e; }
         .dot-green { background: #27c93f; }
-
         .editor-title {
             color: #999;
             font-size: 12px;
             margin-left: 10px;
             font-family: monospace;
         }
-
         .code-editor-wrapper {
             position: relative;
             background: #1e1e1e;
         }
-
         .line-numbers {
             position: absolute;
             left: 0;
@@ -83,7 +200,6 @@
             user-select: none;
             overflow: hidden;
         }
-
         .code-editor {
             font-family: 'Courier New', Courier, monospace;
             font-size: 14px;
@@ -98,11 +214,9 @@
             tab-size: 4;
             outline: none;
         }
-
         .code-editor::placeholder {
             color: #858585;
         }
-
         .code-highlight {
             position: absolute;
             top: 0;
@@ -119,7 +233,6 @@
             color: transparent;
             overflow: hidden;
         }
-
         .code-highlight .keyword { color: #569cd6; font-weight: bold; }
         .code-highlight .string { color: #ce9178; }
         .code-highlight .comment { color: #6a9955; font-style: italic; }
@@ -129,7 +242,6 @@
         .code-highlight .punctuation { color: #d4d4d4; }
         .code-highlight .variable { color: #9cdcfe; }
         .code-highlight .property { color: #9cdcfe; }
-
         .code-footer {
             background: #2d2d2d;
             padding: 8px 15px;
@@ -137,7 +249,6 @@
             color: #858585;
             font-family: monospace;
         }
-
         /* Syntax highlighted display */
         .code-display .keyword { color: #569cd6; font-weight: bold; }
         .code-display .string { color: #ce9178; }
@@ -170,7 +281,6 @@
 
         <div class="container-fluid">
 
-            <!-- Quiz Title -->
             <div class="card mb-4">
                 <div class="card-body">
                     <h4 class="card-title mb-3">Edit Quiz Details</h4>
@@ -194,7 +304,6 @@
                 </div>
             </div>
 
-            <!-- Questions List -->
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Questions</h4>
@@ -217,7 +326,6 @@
                                 <p class="mt-3"><strong>Question:</strong> <span th:text="${q.text}"></span></p>
                                 <p><strong>Type:</strong> <span th:text="${q.type}"></span></p>
 
-                                <!-- Multiple Choice -->
                                 <div th:if="${q.type.name() == 'MCQ'}" class="mt-3">
                                     <h6>Choices:</h6>
                                     <ul>
@@ -228,25 +336,21 @@
                                     </ul>
                                 </div>
 
-                                <!-- True/False -->
                                 <div th:if="${q.type.name() == 'TF'}" class="mt-3">
                                     <p><strong>Correct Answer:</strong> <span th:text="${q.correctAnswer}"></span></p>
                                 </div>
 
-                                <!-- Identification -->
                                 <div th:if="${q.type.name() == 'IDENT'}" class="mt-3">
                                     <p><strong>Correct Answer:</strong> <span th:text="${q.correctAnswer}"></span></p>
                                 </div>
 
-                                <!-- Coding -->
                                 <div th:if="${q.type.name() == 'CODING'}" class="mt-3">
                                     <h6>Expected Code Solution:</h6>
-                                    <div class="code-display" th:attr="data-code=${q.correctAnswer}">
-                                        <span th:text="${q.correctAnswer}">Code here</span>
+                                    <div class="code-display" th:attr="data-code=${q.correctAnswer}" th:text="${q.correctAnswer}">
+                                        Code here
                                     </div>
                                 </div>
 
-                                <!-- Essay -->
                                 <div th:if="${q.type.name() == 'ESSAY'}" class="mt-3">
                                     <p class="text-muted">Essay questions require manual grading.</p>
                                 </div>
@@ -255,12 +359,11 @@
                     </div>
 
                     <div th:if="${#lists.isEmpty(quiz.questions)}" class="text-center mt-3">
-                        <p class="text-muted">No questions added yet. Click below to add questions.</p>
+                        <p class="text-muted">No questions added yet.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Add Questions Section -->
             <div class="card mt-4">
                 <div class="card-body">
                     <h4 class="card-title">Add New Question</h4>
@@ -275,7 +378,6 @@
                 </div>
             </div>
 
-            <!-- MCQ Modal -->
             <div class="modal fade" id="modalMCQ" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <form th:action="@{|/teacher/quiz/${quiz.id}/add_question|}" method="post">
@@ -315,7 +417,6 @@
                 </div>
             </div>
 
-            <!-- True/False Modal -->
             <div class="modal fade" id="modalTF" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <form th:action="@{|/teacher/quiz/${quiz.id}/add_question|}" method="post">
@@ -351,7 +452,6 @@
                 </div>
             </div>
 
-            <!-- Identification Modal -->
             <div class="modal fade" id="modalIdent" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <form th:action="@{|/teacher/quiz/${quiz.id}/add_question|}" method="post">
@@ -384,7 +484,6 @@
                 </div>
             </div>
 
-            <!-- Coding Modal -->
             <div class="modal fade" id="modalCoding" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
                     <form th:action="@{|/teacher/quiz/${quiz.id}/add_question|}" method="post">
@@ -446,7 +545,6 @@ function sum(a, b) {
                 </div>
             </div>
 
-            <!-- Essay Modal -->
             <div class="modal fade" id="modalEssay" tabindex="-1" role="dialog">
                 <div class="modal-dialog modal-dialog-centered" role="document">
                     <form th:action="@{|/teacher/quiz/${quiz.id}/add_question|}" method="post">
@@ -475,7 +573,6 @@ function sum(a, b) {
                 </div>
             </div>
 
-            <!-- Back button -->
             <div class="text-center mt-4 mb-5">
                 <a th:href="@{|/teacher/class/${quiz.classRoom.id}|}" class="btn btn-secondary">Back to Class</a>
             </div>
@@ -504,7 +601,6 @@ function sum(a, b) {
 <script th:src="@{/plugins/chartist-plugin-tooltips/js/chartist-plugin-tooltip.min.js}"></script>
 <script th:src="@{/js/dashboard/dashboard-1.js}"></script>
 
-<!-- Syntax Highlighting Script -->
 <script>
     // Simple syntax highlighter
     function highlightSyntax(code) {

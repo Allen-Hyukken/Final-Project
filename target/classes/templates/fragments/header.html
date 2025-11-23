@@ -29,6 +29,35 @@
             z-index: -1;
         }
 
+        /* Logo in header */
+        .header-logo {
+            display: flex;
+            align-items: center;
+            margin-left: 20000px;
+        }
+
+        .header-logo img {
+            height: 40px;
+            width: auto;
+            object-fit: contain;
+            filter: brightness(1.3) drop-shadow(0 0 10px rgba(127, 127, 255, 0.5));
+            transition: all 0.3s ease;
+        }
+
+        .header-logo img:hover {
+            filter: brightness(1.5) drop-shadow(0 0 15px rgba(127, 127, 255, 0.8));
+            transform: scale(1.05);
+        }
+
+        .header-logo-text {
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-left: 12px;
+            text-shadow: 0 0 15px rgba(127, 127, 255, 0.6);
+            letter-spacing: 0.5px;
+        }
+
         .header .user-img img {
             border: 2px solid rgba(127, 127, 255, 0.6);
             box-shadow: 0 0 15px rgba(127, 127, 255, 0.4);
@@ -107,16 +136,33 @@
             filter: drop-shadow(0 0 12px rgba(127, 127, 255, 0.8));
             transform: scale(1.1);
         }
+
+        /* Adjust header content layout */
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 
 <div th:fragment="header" class="header">
     <div class="header-content clearfix">
-        <div class="nav-control">
-            <div class="hamburger">
-                <span class="toggle-icon"><i class="icon-menu"></i></span>
+        <div class="header-left">
+            <div class="nav-control">
+                <div class="hamburger">
+                    <span class="toggle-icon"><i class="icon-menu"></i></span>
+                </div>
             </div>
+
+            <!-- Add Logo Here -->
+
         </div>
 
         <div class="header-right">
@@ -124,7 +170,7 @@
                 <li class="icons dropdown">
                     <div class="user-img c-pointer position-relative" data-toggle="dropdown">
                         <span class="activity active"></span>
-                        <img th:src="@{/images/img.png}" height="40" width="40" alt="">
+                        <img th:src="@{/images/imgs/12.png}" height="40" width="40" alt="">
                     </div>
                     <div class="drop-down dropdown-profile animated fadeIn dropdown-menu">
                         <div class="dropdown-content-body">
