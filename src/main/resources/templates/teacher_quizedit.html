@@ -379,8 +379,8 @@
             <div class="col p-md-0">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a th:href="@{/teacher}">Home</a></li>
-                    <li class="breadcrumb-item"><a th:href="@{|/teacher/class/${quiz.classRoom.id}|}">Class</a></li>
-                    <li class="breadcrumb-item active">Edit Quiz</li>
+                    <li class="breadcrumb-item"><a th:href="@{|/teacher/class/${quiz.classRoom.id}|}">Classroom</a></li>
+                    <li class="breadcrumb-item active">Edit Quiz- <p style="display: inline;" th:text="${quiz.title}">Quiz Name</p></li>
                 </ol>
             </div>
         </div>
