@@ -1,6 +1,7 @@
 /**
  * TEACHER DASHBOARD - SHARED JAVASCRIPT
  * Functions for teacher pages including code copy, file upload, and syntax highlighting
+ * FIXED: Auto-completion disabled, line numbers sync properly
  */
 
 // ============================================
@@ -103,7 +104,8 @@ function highlightSyntax(code) {
     const keywords = ['function', 'const', 'let', 'var', 'if', 'else', 'for', 'while', 'return',
         'class', 'new', 'this', 'import', 'export', 'from', 'async', 'await',
         'try', 'catch', 'throw', 'break', 'continue', 'switch', 'case', 'default',
-        'typeof', 'instanceof', 'delete', 'void', 'yield', 'in', 'of', 'do'];
+        'typeof', 'instanceof', 'delete', 'void', 'yield', 'in', 'of', 'do',
+        'public', 'private', 'protected', 'static', 'final', 'abstract', 'interface'];
 
     let highlighted = code;
 
@@ -119,7 +121,7 @@ function highlightSyntax(code) {
     // Highlight strings
     highlighted = highlighted.replace(/("(?:[^"\\]|\\.)*")/g, '<span class="string">$1</span>');
     highlighted = highlighted.replace(/('(?:[^'\\]|\\.)*')/g, '<span class="string">$1</span>');
-    highlighted = highlighted.replace(/((?:[^\\]|\\.)*)/g, '<span class="string">$1</span>');
+    highlighted = highlighted.replace(/(`(?:[^`\\]|\\.)*`)/g, '<span class="string">$1</span>');
 
     // Highlight numbers
     highlighted = highlighted.replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>');
@@ -145,9 +147,13 @@ function highlightSyntax(code) {
  * @param {HTMLElement} lineNumbersDiv - The div showing line numbers
  */
 function updateLineNumbers(textarea, lineNumbersDiv) {
-    const lines = textarea.value.split('\n').length;
+    if (!lineNumbersDiv || !textarea) return;
+
+    const lines = textarea.value.split('\n');
+    const lineCount = lines.length;
+
     let numbers = '';
-    for (let i = 1; i <= lines; i++) {
+    for (let i = 1; i <= lineCount; i++) {
         numbers += i + '\n';
     }
     lineNumbersDiv.textContent = numbers;
@@ -155,6 +161,7 @@ function updateLineNumbers(textarea, lineNumbersDiv) {
 
 /**
  * Initialize code editor with syntax highlighting
+ * FIXED: Disabled auto-completion and proper line number syncing
  */
 function initializeCodeEditor() {
     const modalEditor = document.getElementById('modal-code-editor');
@@ -162,6 +169,12 @@ function initializeCodeEditor() {
     const modalLineNumbers = document.getElementById('modal-line-numbers');
 
     if (modalEditor) {
+        // CRITICAL FIX: Disable all auto-completion features
+        modalEditor.setAttribute('autocomplete', 'off');
+        modalEditor.setAttribute('autocorrect', 'off');
+        modalEditor.setAttribute('autocapitalize', 'off');
+        modalEditor.setAttribute('spellcheck', 'false');
+
         // Handle Tab key in code editor
         modalEditor.addEventListener('keydown', function(e) {
             if (e.key === 'Tab') {
@@ -170,10 +183,13 @@ function initializeCodeEditor() {
                 const end = this.selectionEnd;
                 this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
                 this.selectionStart = this.selectionEnd = start + 4;
+
+                // Update after tab insertion
+                updateHighlight();
             }
         });
 
-        // Update syntax highlighting
+        // Update syntax highlighting and line numbers
         function updateHighlight() {
             if (modalHighlight) {
                 modalHighlight.innerHTML = highlightSyntax(modalEditor.value);
@@ -183,9 +199,20 @@ function initializeCodeEditor() {
             }
         }
 
-        // Initialize and attach event listeners
+        // Initialize
         updateHighlight();
-        modalEditor.addEventListener('input', updateHighlight);
+
+        // Update on input (FIXED: Now updates line numbers on every keystroke)
+        modalEditor.addEventListener('input', function() {
+            updateHighlight();
+        });
+
+        // Handle paste events
+        modalEditor.addEventListener('paste', function() {
+            setTimeout(() => {
+                updateHighlight();
+            }, 0);
+        });
 
         // Sync scrolling
         modalEditor.addEventListener('scroll', function() {
@@ -199,7 +226,66 @@ function initializeCodeEditor() {
         });
     }
 
-    // Syntax highlight existing code displays
+    // Initialize any code editors in quiz edit page (for viewing existing questions)
+    const codeEditors = document.querySelectorAll('.code-editor');
+    codeEditors.forEach((editor, index) => {
+        const wrapper = editor.closest('.code-editor-wrapper');
+        if (!wrapper) return;
+
+        const lineNumbers = wrapper.querySelector('.line-numbers');
+        const highlight = wrapper.querySelector('.code-highlight');
+
+        // CRITICAL FIX: Disable auto-completion
+        editor.setAttribute('autocomplete', 'off');
+        editor.setAttribute('autocorrect', 'off');
+        editor.setAttribute('autocapitalize', 'off');
+        editor.setAttribute('spellcheck', 'false');
+
+        function updateEditorHighlight() {
+            if (highlight) {
+                highlight.innerHTML = highlightSyntax(editor.value);
+            }
+            if (lineNumbers) {
+                updateLineNumbers(editor, lineNumbers);
+            }
+        }
+
+        // Tab handling
+        editor.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+                updateEditorHighlight();
+            }
+        });
+
+        // Update on input
+        editor.addEventListener('input', updateEditorHighlight);
+
+        // Handle paste
+        editor.addEventListener('paste', function() {
+            setTimeout(updateEditorHighlight, 0);
+        });
+
+        // Sync scrolling
+        editor.addEventListener('scroll', function() {
+            if (highlight) {
+                highlight.scrollTop = this.scrollTop;
+                highlight.scrollLeft = this.scrollLeft;
+            }
+            if (lineNumbers) {
+                lineNumbers.scrollTop = this.scrollTop;
+            }
+        });
+
+        // Initial render
+        updateEditorHighlight();
+    });
+
+    // Syntax highlight existing code displays (read-only)
     document.querySelectorAll('.code-display').forEach(function(display) {
         const code = display.getAttribute('data-code');
         if (code) {
@@ -222,6 +308,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize code editor
     initializeCodeEditor();
 
-    // Add any other initializations here
-    console.log('Teacher Dashboard initialized');
+    // Auto-dismiss alerts after 5 seconds
+    const alerts = document.querySelectorAll('.alert-dismissible');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            const closeBtn = alert.querySelector('.close');
+            if (closeBtn) closeBtn.click();
+        }, 5000);
+    });
+
+    console.log('Teacher Dashboard initialized - Auto-completion disabled, line numbers fixed');
 });

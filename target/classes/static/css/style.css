@@ -9516,7 +9516,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
       color: #FF4D87; }
 
 .login-form__title {
-  color: #515E75;
+  color: #ffffff;
   margin-bottom: 20px; }
 
 .login-form__btn {
@@ -9534,19 +9534,19 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 
 .login-form__intro p, .login-form__intro h4 {
   margin-bottom: 0;
-  color: #6A7890; }
+  color: #ffffff; }
 
 .login-form__intro h4 {
   padding: 10px 0; }
 
 .login-form__intro a {
-  color: #596A81;
+  color: #ffffff;
   text-decoration: underline; }
 
 .login-input .form-group {
   margin-bottom: 30px; }
   .login-input .form-group label {
-    color: #505F76;
+    color: #ffffff;
     font-size: 15px; }
   .login-input .form-group .form-control {
     background: transparent;
@@ -9554,7 +9554,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 
     border-bottom: 1px solid #f5f5f5;
 
-    color: #7A88A1; }
+    color: #ffffff; }
 
 .form-control:focus {
   box-shadow: none; }
@@ -9860,19 +9860,19 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 
 ::-webkit-input-placeholder {
   /* Chrome/Opera/Safari */
-  color: #777 !important; }
+  color: #dcdcdc !important; }
 
 ::-moz-placeholder {
   /* Firefox 19+ */
-  color: #777 !important; }
+  color: #dcdcdc !important; }
 
 :-ms-input-placeholder {
   /* IE 10+ */
-  color: #777 !important; }
+  color: #dcdcdc !important; }
 
 :-moz-placeholder {
   /* Firefox 18- */
-  color: #777 !important; }
+  color: #dcdcdc !important; }
 
 /*    
 Input Style
